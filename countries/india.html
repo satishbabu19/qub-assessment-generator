@@ -162,7 +162,7 @@
 <div class="wrap">
   <header>
     <div class="nav-row">
-      <a href="../index.html" class="back-btn">&larr; Back to Homepage</a>
+      <a href="../" class="back-btn">&larr; Back to Homepage</a>
     </div>
     <div class="brand-row">
       <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Queen%E2%80%99s_Red_Log.svg" alt="Queen's University Belfast">
@@ -264,6 +264,17 @@
         <div class="form-group">
           <label for="course">QUB Course</label>
           <select id="course" onchange="updateCourseDefaults()"></select>
+        </div>
+
+        <!-- Dynamic GIFT Citizenship Field -->
+        <div class="form-group" id="citizenshipGroup" style="display: none;">
+          <label for="citizenship">Citizenship Check (GIFT Course)</label>
+          <select id="citizenship">
+            <option value="">-- Select Status --</option>
+            <option value="Passport Provided">Provided - Passport</option>
+            <option value="Aadhaar Provided">Provided - Aadhaar</option>
+            <option value="Not Provided">Not Provided</option>
+          </select>
         </div>
 
         <div class="row-2">
@@ -376,7 +387,7 @@
 
   // Course database derived from AO sheet
   const COURSES = [
-     // ---- HAPP ----//
+    // ---- HAPP ----//
     { school:"happ", track:"intl", name:"Anthropology MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"happ", track:"intl", name:"Conflict Transformation and Social Justice MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"happ", track:"intl", name:"Geopolitics MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
@@ -439,6 +450,20 @@
     return COURSES.find(c => c.name === courseName) || COURSES[0];
   }
 
+  function updateCourseDefaults() {
+    const courseObj = getSelectedCourse();
+    const citizenshipGroup = document.getElementById("citizenshipGroup");
+    
+    // Toggle Citizenship UI based on GIFT course status
+    if (courseObj.track === "gift") {
+      citizenshipGroup.style.display = "flex";
+    } else {
+      citizenshipGroup.style.display = "none";
+    }
+    
+    generateNotes();
+  }
+
   // Formats 'YYYY-MM' input string to 'MM/YYYY' for output display
   function formatDateMMYYYY(monthStr) {
     if (!monthStr) return "[MM/YYYY]";
@@ -465,6 +490,7 @@
     const englishStatus = document.getElementById("english").value;
     const transcripts = document.getElementById("transcripts").value;
     const degreeCert = document.getElementById("degreeCert").value;
+    const citizenshipVal = document.getElementById("citizenship").value;
     
     let depositMode = document.getElementById("deposit").value;
     let isDepositRequired = depositMode === "Auto" ? courseObj.deposit === "Yes" : depositMode === "Yes";
@@ -473,6 +499,21 @@
     const scoreDetails = document.getElementById("scoreDetails").value.trim();
     const testDate = document.getElementById("testDate").value;
     const verifyReason = document.getElementById("verifyReason").value;
+
+    // GIFT Citizenship logic
+    let citizenshipNote = "";
+    let giftCondition = "";
+
+    if (courseObj.track === "gift") {
+      if (citizenshipVal === "Passport Provided") {
+        citizenshipNote = "Citizenship - Indian National - Passport Provided";
+      } else if (citizenshipVal === "Aadhaar Provided") {
+        citizenshipNote = "Citizenship - Indian National – Aadhaar Provided";
+      } else if (citizenshipVal === "Not Provided") {
+        citizenshipNote = "Citizenship - Indian National - Not provided";
+        giftCondition = "GIFT - National of India";
+      }
+    }
 
     // Condition evaluations
     let academicCondition = "";
@@ -495,7 +536,7 @@
     let englishCondition = (englishStatus === "Not Met") ? `IELTS ${courseObj.ielts}` : "";
 
     // Build Recommendation / Offer Conditions
-    let conditionsArr = [academicCondition, englishCondition, depositCondition].filter(c => c !== "");
+    let conditionsArr = [academicCondition, englishCondition, giftCondition, depositCondition].filter(c => c !== "");
     let recommendationText = "";
     if ((englishStatus === "Met" || englishStatus === "Class XII English Met") && conditionsArr.length === 0) {
       recommendationText = "Recommend: Unconditional Offer – (SB-UQ)";
@@ -505,6 +546,11 @@
 
     // Build Assessment Note Text
     let noteParts = [];
+
+    // GIFT course starts with Citizenship
+    if (courseObj.track === "gift" && citizenshipNote) {
+      noteParts.push(citizenshipNote);
+    }
 
     // 1. English Note
     if (englishStatus === "Met" || englishStatus === "Class XII English Met") {
@@ -642,7 +688,7 @@
       localStorage.removeItem(STORAGE_KEY);
       document.getElementById("recommendationOutput").value = "";
       document.getElementById("noteOutput").value = "";
-      generateNotes();
+      updateCourseDefaults();
     }
   }
 
@@ -667,6 +713,7 @@
   // Initial load logic
   populateCourseDropdown();
   const restored = restoreFromLocalStorage();
+  updateCourseDefaults();
   if (!restored) {
     generateNotes();
   }
