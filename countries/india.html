@@ -519,11 +519,11 @@
     let acadStr = "";
     if (status === "Complete") {
       let endFormatted = formatDateMMYYYY(endDate);
-      acadStr += `Attended ${university}, India (${startFormatted} to ${endFormatted}) which is a recognised ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree from a recognised Indian University is considered comparable to a UK Bachelor degree.\n\n`;
+      acadStr += `Attended ${university}, India (${startFormatted} to ${endFormatted}) which is a recognised ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
       acadStr += `Awarded a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
     } else {
       let endFormatted = formatDateMMYYYY(endDate);
-      acadStr += `Attending ${university}, India (${startFormatted} to ${endFormatted}) which is a recognised ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree from a recognised Indian University is considered comparable to a UK Bachelor degree.\n\n`;
+      acadStr += `Attending ${university}, India (${startFormatted} to ${endFormatted}) which is a recognised ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
       acadStr += `Due to complete a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
     }
 
@@ -554,7 +554,7 @@
     noteParts.push(scaleStr);
 
     // 4. Standard Result & Final Recommendation
-    let finalClassStr = `This qualification is evaluated as equivalent to a UK ${ukClass} standard.`;
+    let finalClassStr = `This Bachelor degree is considered comparable to a UK ${ukClass} standard.`;
     if (recommendationText) {
       finalClassStr += `\n\n${recommendationText}`;
     }
