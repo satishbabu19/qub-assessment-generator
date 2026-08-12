@@ -457,7 +457,7 @@
     // 1. English Note
     if (englishStatus === "Met" || englishStatus === "Class XII English Met") {
       let engStr = `English - Holds ${testName || "Class XII / English Test"}`;
-      if (scoreDetails) engStr += ` (${scoreDetails})`;
+      if (scoreDetails) engStr += ` ${scoreDetails}`;
       if (testDate) engStr += ` dated ${formatDateMMYYYY(testDate)}`;
       if (verifyReason) engStr += ` [${verifyReason}]`;
       engStr += " which meets course and UKVI requirements.";
@@ -466,12 +466,12 @@
       let reqIelts = courseObj.ielts ? (courseObj.ielts.includes("IELTS") ? courseObj.ielts : `IELTS Academic ${courseObj.ielts}`) : "IELTS Academic 6.5 (6.0)";
       let engStr = `English – Requires ${reqIelts} or equivalent Standardised Test / Standard XII English waiver.`;
       if (testName) {
-        engStr += ` Holds ${testName}${scoreDetails ? ' (' + scoreDetails + ')' : ''}${testDate ? ' dated ' + formatDateMMYYYY(testDate) : ''}${verifyReason ? ' - ' + verifyReason : ''}`;
+        engStr += ` Holds ${testName}${scoreDetails ? ' ' + scoreDetails : ''}${testDate ? ' dated ' + formatDateMMYYYY(testDate) : ''}${verifyReason ? ' - ' + verifyReason : ''}`;
       }
       noteParts.push(engStr);
     }
 
-// Dynamic Format for Percentage / CGPA / Marks
+    // Dynamic Format for Percentage / CGPA / Marks
     let scoreDisplayStr = "";
     const numScore = parseFloat(cgpa);
     const numTotal = parseFloat(totalCgpa);
