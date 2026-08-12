@@ -1,1 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUB Assessment Notes Generator - Pakistan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0c;
+    --bg-raised: #141417;
+    --bg-card: #18181c;
+    --bg-card-hover: #1e1e23;
+    --bg-input: #101013;
+    --line: #28282e;
+    --line-soft: #1c1c20;
+    --text: #efece6;
+    --text-dim: #a6a4a0;
+    --text-faint: #68666e;
+    --qub-red: #8f0e20;
+    --qub-red-bright: #b8142c;
+    --qub-gold: #d9a91a;
+    --pk-green: #00411d;
+    --danger: #c0392b;
+    --radius: 14px;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(0, 65, 29, 0.22), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
 
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* Header */
+  header { padding: 52px 0 0; }
+  .nav-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg-card); border: 1px solid var(--line);
+    color: var(--text-dim); padding: 8px 16px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 13px; transition: .15s ease;
+  }
+  .back-btn:hover { border-color: var(--qub-gold); color: var(--qub-gold); }
+  
+  .brand-row { display: flex; align-items: center; gap: 18px; }
+  .brand-row img { height: 34px; width: auto; filter: brightness(0) invert(1) opacity(0.92); }
+  .brand-row .divider { width: 1px; height: 28px; background: var(--line); }
+  .brand-row .kicker {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--text-faint);
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(30px, 5vw, 44px); line-height: 1.08; margin: 20px 0 10px;
+    letter-spacing: -0.01em;
+  }
+  h1 em { font-style: italic; color: var(--qub-gold); }
+  .subtitle { color: var(--text-dim); font-size: 15px; line-height: 1.6; max-width: 58ch; margin: 0 0 28px; }
+  
+  /* Pakistan Flag Bar */
+  .pak-flag-bar {
+    height: 4px; width: 100%;
+    background: linear-gradient(90deg, #ffffff 0% 22%, var(--pk-green) 22% 100%);
+    border-radius: 2px; margin-bottom: 28px; opacity: .9;
+  }
+
+  /* Form Layout */
+  .form-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 32px;
+  }
+  @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .card-title {
+    font-family: var(--font-display); font-size: 18px; font-weight: 500;
+    color: var(--qub-gold); border-bottom: 1px solid var(--line-soft);
+    padding-bottom: 10px; margin: 0 0 4px; display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em;
+    text-transform: uppercase; color: var(--text-dim);
+  }
+  .form-group input, .form-group select {
+    background: var(--bg-input); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 12px; color: var(--text); font-family: var(--font-body); font-size: 13.5px;
+    outline: none; transition: border-color .15s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--qub-red-bright); }
+  
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* Output Section */
+  .output-section { margin-top: 10px; display: flex; flex-direction: column; gap: 20px; }
+  .output-card {
+    background: var(--bg-raised); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .output-header { display: flex; justify-content: space-between; align-items: center; }
+  .output-header h3 { font-family: var(--font-display); margin: 0; font-size: 17px; color: var(--text); }
+  
+  textarea.output-box {
+    width: 100%; min-height: 220px; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; color: var(--qub-gold); font-family: var(--font-mono);
+    font-size: 12.5px; line-height: 1.6; padding: 14px; resize: vertical; outline: none;
+  }
+  .rec-box { min-height: auto; color: #4cd964; }
+
+  .btn-group { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn {
+    background: var(--bg-card); border: 1px solid var(--line); color: var(--text);
+    padding: 8px 16px; border-radius: 8px; font-size: 12.5px; font-family: var(--font-mono);
+    transition: .15s ease; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--qub-gold); color: var(--qub-gold); }
+  .btn.primary { background: var(--qub-red); border-color: var(--qub-red-bright); color: #fff; }
+  .btn.primary:hover { background: var(--qub-red-bright); }
+  .btn.danger { border-color: var(--danger); color: #e74c3c; }
+  .btn.danger:hover { background: var(--danger); color: #fff; }
+
+  footer {
+    border-top: 1px solid var(--line-soft);
+    padding-top: 22px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+  .footer-sub { font-size: 12px; color: var(--text-faint); }
+  .footer-credit {
+    font-family: var(--font-display); font-size: 24px; font-weight: 500;
+    color: var(--qub-gold); margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="nav-row">
+      <a href="../" class="back-btn">&larr; Back to Homepage</a>
+    </div>
+    <div class="brand-row">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Queen%E2%80%99s_Red_Log.svg" alt="Queen's University Belfast">
+      <div class="divider"></div>
+      <span class="kicker">Admissions &middot; Pakistan Assessment</span>
+    </div>
+    <h1>Pakistan Assessment <em>Note Generator</em></h1>
+    <p class="subtitle">Complete evaluation tool for qualifications from Pakistan, fully aligned with QUB admissions guidelines and English requirements.</p>
+    <div class="pak-flag-bar"></div>
+  </header>
+
+  <form id="pkForm" onsubmit="return false;">
+    <div class="form-grid">
+      
+      <!-- Academic Background -->
+      <div class="card">
+        <div class="card-title">Academic Background</div>
+        
+        <div class="form-group">
+          <label for="scenario">Assessment Pathway / Template</label>
+          <select id="scenario" onchange="onScenarioChange()">
+            <option value="tier1_complete">Pakistan Tier 1 – Degree Complete</option>
+            <option value="tier2_complete">Pakistan Tier 2 – Degree Complete</option>
+            <option value="tier1_ongoing">Pakistan Tier 1 – Degree Ongoing</option>
+            <option value="tier2_ongoing">Pakistan Tier 2 – Degree Ongoing</option>
+            <option value="bachelor_plus_master">2 Year Bachelor plus Master’s</option>
+            <option value="punjab_llm_complete">University of the Punjab (LLM - Complete)</option>
+            <option value="punjab_llm_ongoing">University of the Punjab (LLM - Ongoing)</option>
+          </select>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label for="sector">Institution Sector</label>
+            <select id="sector">
+              <option value="public">Public Sector</option>
+              <option value="private">Private Sector</option>
+              <option value="public/private">Public/Private Sector</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="university">University Name</label>
+            <input type="text" id="university" value="" placeholder="e.g. NUST / LUMS">
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label for="startDate">Start Date (MM/YYYY)</label>
+            <input type="month" id="startDate" value="">
+          </div>
+          <div class="form-group">
+            <label for="endDate">End / Completion Date (MM/YYYY)</label>
+            <input type="month" id="endDate" value="">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="degreeSubject">Bachelor Degree Subject</label>
+          <input type="text" id="degreeSubject" value="" placeholder="e.g. Software Engineering">
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label for="cgpa">CGPA / Score</label>
+            <input type="number" step="0.01" id="cgpa" value="" placeholder="e.g. 3.1 or 65">
+          </div>
+          <div class="form-group">
+            <label for="totalScale">Scale / Total</label>
+            <input type="number" step="0.1" id="totalScale" value="4.0" placeholder="4.0 or 100">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ukClass">UK Equivalent Result</label>
+          <select id="ukClass">
+            <option value="2.1">2.1 Standard</option>
+            <option value="2.2">2.2 Standard</option>
+            <option value="First">First Class Standard</option>
+          </select>
+        </div>
+
+        <!-- Master's Specific Fields (For 2-Year Bachelor + Master's Scenario) -->
+        <div id="mastersCardSection" style="display: none; border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 4px;">
+          <div class="card-title" style="font-size:15px; margin-bottom:10px;">Master’s Degree Details</div>
+          
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label for="masterUniversity">Master's University Name</label>
+            <input type="text" id="masterUniversity" value="" placeholder="e.g. University of the Punjab">
+          </div>
+
+          <div class="row-2" style="margin-bottom: 10px;">
+            <div class="form-group">
+              <label for="masterStartDate">Master Start (MM/YYYY)</label>
+              <input type="month" id="masterStartDate" value="">
+            </div>
+            <div class="form-group">
+              <label for="masterEndDate">Master End (MM/YYYY)</label>
+              <input type="month" id="masterEndDate" value="">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label for="masterSubject">Master Degree Subject</label>
+            <input type="text" id="masterSubject" value="" placeholder="e.g. Computer Science">
+          </div>
+
+          <div class="row-2">
+            <div class="form-group">
+              <label for="masterScore">Master Score / %</label>
+              <input type="number" step="0.01" id="masterScore" value="" placeholder="e.g. 68">
+            </div>
+            <div class="form-group">
+              <label for="masterTotal">Master Total Scale</label>
+              <input type="number" step="0.1" id="masterTotal" value="100" placeholder="100 or 4.0">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Course & Requirements -->
+      <div class="card">
+        <div class="card-title">English Language Requirements</div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label for="testName">Test Name</label>
+            <input type="text" id="testName" placeholder="e.g. IELTS Academic / Standard XII">
+            </div>
+  <div class="form-group">
+    <label for="scoreDetails">Test Score</label>
+    <input type="text" id="scoreDetails" placeholder="e.g. 6.5 Overall (6.0 all components)">
+  </div>
+</div>
+
+<div class="row-2">
+  <div class="form-group">
+    <label for="testDate">Test Date (MM/YYYY)</label>
+    <input type="month" id="testDate">
+  </div>
+  <div class="form-group">
+    <label for="verifyReason">Verify / Reason</label>
+    <select id="verifyReason">
+    <option value="Verified">Verified</option>
+    <option value="Insufficient Score">Insufficient Score</option>
+    <option value="Outside Validity Period">Outside Validity Period</option></select>
+  </div>
+</div>
+
+        <div class="card-title" style="margin-top:8px;">QUB Programme Details</div>
+
+        <div class="form-group">
+          <label for="course">Select QUB Course</label>
+          <select id="course" onchange="generateNotes()"></select>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label for="deposit">Deposit Required</label>
+            <select id="deposit">
+              <option value="Auto" selected>Auto (from Course)</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="missingDocs">Missing Documents (if any)</label>
+            <input type="text" id="missingDocs" value="" placeholder="e.g. final transcript, degree certificate">
+          </div>
+        </div>
+
+        <div class="btn-group" style="margin-top:auto;">
+          <button type="button" class="btn danger" onclick="resetForm()">Clear Form</button>
+          <button type="button" class="btn primary" onclick="generateNotes()">Generate Notes</button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+  <!-- Output Display -->
+  <div class="output-section">
+    <div class="output-card">
+      <div class="output-header">
+        <h3>Recommendation / Offer Conditions</h3>
+        <button type="button" class="btn" onclick="copyToClipboard('recommendationOutput')">Copy Recommendation</button>
+      </div>
+      <textarea id="recommendationOutput" class="output-box rec-box" readonly></textarea>
+    </div>
+
+    <div class="output-card">
+      <div class="output-header">
+        <h3>Generated Assessment Note</h3>
+        <button type="button" class="btn" onclick="copyToClipboard('noteOutput')">Copy Note</button>
+      </div>
+      <textarea id="noteOutput" class="output-box" readonly></textarea>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-sub">QUB Assessment Notes Generator &middot; Pakistan Module</span>
+    <h2 class="footer-credit">Made by Satish 🇵🇰</h2>
+  </footer>
+</div>
+
+<script>
+  const STORAGE_KEY = "qub_pakistan_form_data";
+
+  const COURSES = [
+    // Law & Criminology
+    { name:"Law LLM", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Criminology and Criminal Justice LLM", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Intellectual Property Law LLM", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"International Commercial and Business Law LLM", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"International Human Rights Law LLM", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Law and Technology LLM", ielts:"6.0 (5.5)", deposit:"No" },
+
+    // Management School
+    { name:"Management MSC", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"International Business MSC", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Finance MSCFIN", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Business Analytics MSC", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Accounting and Finance MSC", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Marketing MSC", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Risk and Investment Management MSC", ielts:"6.0 (5.5)", deposit:"No" },
+    { name:"Master of Business Administration MBA", ielts:"6.5 (6.0)", deposit:"No" },
+
+    // Computer Science & Engineering
+    { name:"Software Development MSC", ielts:"6.0 (5.5)", deposit:"Yes" },
+    { name:"Artificial Intelligence MSC", ielts:"6.0 (5.5)", deposit:"Yes" },
+    { name:"Data Analytics MSC", ielts:"6.0 (5.5)", deposit:"Yes" },
+    { name:"Cyber Security MSC", ielts:"6.0 (5.5)", deposit:"Yes" },
+    { name:"Construction and Project Management MSC", ielts:"6.0 (5.5)", deposit:"Yes" },
+    { name:"Civil Engineering MSC", ielts:"6.0 (5.5)", deposit:"Yes" },
+    { name:"Mechanical Engineering MSC", ielts:"6.0 (5.5)", deposit:"Yes" },
+
+    // Health, Life Sciences & Social Sciences
+    { name:"Public Health MPH", ielts:"6.5 (6.0)", deposit:"No" },
+    { name:"Psychological Science MSC", ielts:"6.5 (6.0)", deposit:"No" },
+    { name:"Clinical Health Psychology MSC", ielts:"6.5 (6.0)", deposit:"No" },
+    { name:"Experimental Medicine MSC", ielts:"6.5 (6.0)", deposit:"No" },
+    { name:"International Relations MA", ielts:"6.5 (5.5)", deposit:"No" },
+    { name:"Politics MA", ielts:"6.5 (5.5)", deposit:"No" }
+  ];
+
+  function populateCourseDropdown() {
+    const courseSelect = document.getElementById("course");
+    courseSelect.innerHTML = COURSES.map(c => `<option value="${c.name}">${c.name}</option>`).join("");
+  }
+
+  function getSelectedCourse() {
+    const courseName = document.getElementById("course").value;
+    return COURSES.find(c => c.name === courseName) || COURSES[0];
+  }
+
+  function formatDateMMYYYY(monthStr) {
+    if (!monthStr) return "";
+    const parts = monthStr.split('-');
+    if (parts.length === 2) {
+      return `${parts[1]}/${parts[0]}`;
+    }
+    return monthStr;
+  }
+
+  function getMonthYearText(monthStr) {
+    if (!monthStr) return "MONTH YEAR";
+    const [year, month] = monthStr.split('-');
+    const dateObj = new Date(year, parseInt(month) - 1);
+    const monthName = dateObj.toLocaleString('en-US', { month: 'long' });
+    return `${monthName} ${year}`;
+  }
+
+  function getYearText(monthStr) {
+    if (!monthStr) return "YEAR";
+    const parts = monthStr.split('-');
+    return parts[0] || "YEAR";
+  }
+
+  function onScenarioChange() {
+    const scenario = document.getElementById("scenario").value;
+    const mastersCardSection = document.getElementById("mastersCardSection");
+    
+    if (scenario === "bachelor_plus_master") {
+      mastersCardSection.style.display = "block";
+    } else {
+      mastersCardSection.style.display = "none";
+    }
+
+    if (scenario === "punjab_llm_complete" || scenario === "punjab_llm_ongoing") {
+      document.getElementById("university").value = "University of the Punjab, Lahore";
+      document.getElementById("sector").value = "public";
+      document.getElementById("degreeSubject").value = "Law";
+    }
+
+    generateNotes();
+  }
+
+  function generateNotes() {
+    const scenario = document.getElementById("scenario").value;
+    const sector = document.getElementById("sector").value;
+    const uniName = document.getElementById("university").value.trim() || "UNI NAME";
+    const startDate = formatDateMMYYYY(document.getElementById("startDate").value) || "DATE";
+    const endDate = formatDateMMYYYY(document.getElementById("endDate").value) || "DATE";
+    const endMonthYear = getMonthYearText(document.getElementById("endDate").value);
+    const endYear = getYearText(document.getElementById("endDate").value);
+    const degreeSubject = document.getElementById("degreeSubject").value.trim() || "SUBJECT";
+    
+    const cgpa = document.getElementById("cgpa").value.trim() || "XXX";
+    const totalScale = document.getElementById("totalScale").value.trim() || "4.0";
+    const ukClass = document.getElementById("ukClass").value;
+    
+    const courseObj = getSelectedCourse();
+    const englishStatus = document.getElementById("english").value;
+    const testName = document.getElementById("testName").value.trim();
+    const scoreDetails = document.getElementById("scoreDetails").value.trim();
+    const testDate = document.getElementById("testDate").value;
+    const verifyReason = document.getElementById("verifyReason").value.trim();
+
+    let depositMode = document.getElementById("deposit").value;
+    let isDepositRequired = depositMode === "Auto" ? courseObj.deposit === "Yes" : depositMode === "Yes";
+    const missingDocs = document.getElementById("missingDocs").value.trim();
+
+    // Master's degree variables
+    const masterUni = document.getElementById("masterUniversity").value.trim() || "UNI NAME";
+    const masterStartDate = formatDateMMYYYY(document.getElementById("masterStartDate").value) || "DATE";
+    const masterEndDate = formatDateMMYYYY(document.getElementById("masterEndDate").value) || "DATE";
+    const masterEndYear = getYearText(document.getElementById("masterEndDate").value);
+    const masterSubject = document.getElementById("masterSubject").value.trim() || "SUBJECT";
+    const masterScore = document.getElementById("masterScore").value.trim() || "XXX";
+    const masterTotal = document.getElementById("masterTotal").value.trim() || "XXX";
+
+    // ENGLISH LOGIC IMPLEMENTATION
+    let reqIelts = courseObj.ielts ? (courseObj.ielts.includes("IELTS") ? courseObj.ielts : `${courseObj.ielts}`) : "6.5 (6.0)";
+    let engStr = "";
+    let dateStr = testDate ? `dated ${formatDateMMYYYY(testDate)}` : "";
+
+    if (englishStatus === "Verified" || englishStatus === "Met") {
+      let testInfo = [testName, scoreDetails, dateStr, verifyReason ? `[${verifyReason}]` : "[Verified]"].filter(Boolean).join(" ");
+      engStr = `English - Holds ${testInfo} which meets course and UKVI requirements.`;
+    } else {
+      engStr = `English - Requires IELTS Academic ${reqIelts} to satisfy course and UKVI requirements.`;
+      if (testName) {
+        let reasonPart = verifyReason ? verifyReason : (scoreDetails ? scoreDetails : "Insufficient score / Outside Validity Period");
+        engStr += ` Holds ${testName} - [${reasonPart}]`;
+      }
+    }
+
+    // RECOMMENDATION CONDITIONS
+    let recConditions = [];
+
+    if (englishStatus === "Not Met") {
+      recConditions.push(`IELTS ${courseObj.ielts}`);
+    }
+
+    if (scenario.includes("ongoing")) {
+      if (scenario.includes("punjab_llm")) {
+        recConditions.push("successful completion of degree with 50%");
+      } else {
+        recConditions.push(`completion of degree with ${cgpa}/4.0`);
+      }
+    }
+
+    if (isDepositRequired) {
+      recConditions.push("deposit");
+    }
+
+    if (missingDocs) {
+      recConditions.push(`submission of ${missingDocs}`);
+    }
+
+    let recommendLine = "";
+    if (recConditions.length > 0) {
+      recommendLine = `Recommend: conditional offer based on ${recConditions.join(", ")}.`;
+    } else {
+      recommendLine = "Recommend: unconditional offer.";
+    }
+
+    let englishEvalSummary = engStr + "\n\n";
+
+    // Template Text Assembly
+    let noteText = "";
+
+    if (scenario === "tier1_complete") {
+      noteText = englishEvalSummary +
+      `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
+      `Awarded a Bachelor degree in ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
+      `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.5/4.0 to a UK 2.2 standard \n\n` +
+      `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
+      `${recommendLine}`;
+
+    } else if (scenario === "tier2_complete") {
+      noteText = englishEvalSummary +
+      `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
+      `Awarded a Bachelor degree in ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
+      `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.7/4.0 to a UK 2.2 standard.  \n\n` +
+      `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
+      `${recommendLine}`;
+
+    } else if (scenario === "tier1_ongoing") {
+      noteText = englishEvalSummary +
+      `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
+      `Due to complete a Bachelor degree in ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
+      `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.5/4.0 to a UK 2.2 standard \n\n` +
+      `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
+      `${recommendLine}`;
+
+    } else if (scenario === "tier2_ongoing") {
+      noteText = englishEvalSummary +
+      `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
+      `Due to complete a Bachelor degree in ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
+      `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.7/4.0 to a UK 2.2 standard.  \n\n` +
+      `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
+      `${recommendLine}`;
+
+    } else if (scenario === "bachelor_plus_master") {
+      let bPct = (totalScale === "100" || totalScale === "100%") ? `${cgpa}%` : `${cgpa}/${totalScale}`;
+      let mPct = (masterTotal === "100" || masterTotal === "100%") ? `${masterScore}%` : `${masterScore}/${masterTotal}`;
+
+      noteText = englishEvalSummary +
+      `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector university (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree. \n\n` +
+      `Awarded a Bachelor of ${degreeSubject} in (${endYear}). Uploaded transcripts and award cert display a final score of ${bPct}. \n\n` +
+      `Attended ${masterUni}, Pakistan (${masterStartDate} to ${masterEndDate}) which is a recognised ${sector} sector HEI (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree.  \n\n` +
+      `Awarded a Master of ${masterSubject} in (${masterEndYear}). Uploaded transcripts and award cert display a final score of ${mPct}. According to QUB guidelines: \n` +
+      `a 2 year Bachelor degree with 60% followed by a Master’s degree with 70% can be considered comparable to a UK Bachelor degree of 2.1 standard.  \n` +
+      `A 2 year Bachelor degree with 55% followed by a Master’s degree with 60% can be considered comparable to a UK Bachelor degree of 2.2 standard. \n\n` +
+      `As this applicant attained ${bPct} in the Bachelor degree and ${mPct} in the Master’s degree, these 2 qualifications combined could be considered comparable to a UK Bachelor degree of ${ukClass} standard. \n\n` +
+      `${recommendLine}`;
+
+    } else if (scenario === "punjab_llm_complete") {
+      noteText = englishEvalSummary +
+      `Attended University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
+      `Awarded a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
+      `${recommendLine}`;
+
+    } else if (scenario === "punjab_llm_ongoing") {
+      noteText = englishEvalSummary +
+      `Attending University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
+      `Due to complete a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
+      `${recommendLine}`;
+    }
+
+    document.getElementById("recommendationOutput").value = recommendLine;
+    document.getElementById("noteOutput").value = noteText;
+
+    saveToLocalStorage();
+  }
+
+  function saveToLocalStorage() {
+    const fields = document.querySelectorAll("#pkForm input, #pkForm select");
+    const formData = {};
+    fields.forEach(el => formData[el.id] = el.value);
+    formData["recommendationOutput"] = document.getElementById("recommendationOutput").value;
+    formData["noteOutput"] = document.getElementById("noteOutput").value;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+  }
+
+  function restoreFromLocalStorage() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return false;
+    try {
+      const formData = JSON.parse(saved);
+      Object.keys(formData).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = formData[id];
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function resetForm() {
+    if (confirm("Are you sure you want to clear all form fields?")) {
+      document.getElementById("pkForm").reset();
+      localStorage.removeItem(STORAGE_KEY);
+      document.getElementById("recommendationOutput").value = "";
+      document.getElementById("noteOutput").value = "";
+      onScenarioChange();
+    }
+  }
+
+  function copyToClipboard(id) {
+    const el = document.getElementById(id);
+    if (!el || !el.value) return;
+    el.select();
+    document.execCommand('copy');
+    alert("Copied to clipboard!");
+  }
+
+  document.querySelectorAll("#pkForm input, #pkForm select").forEach(element => {
+    element.addEventListener("input", generateNotes);
+    element.addEventListener("change", generateNotes);
+  });
+
+  populateCourseDropdown();
+  if (!restoreFromLocalStorage()) {
+    onScenarioChange();
+  } else {
+    onScenarioChange();
+  }
+</script>
+
+</body>
+</html>
