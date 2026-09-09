@@ -322,7 +322,7 @@
   .bulk-row{
     display:grid;grid-template-columns:1.2fr 1fr 1fr 0.8fr auto;gap:8px;
     padding:9px 10px;margin-bottom:8px;
-    background:var(--bg-card);border:1px dashed var(--line);border-radius:9px;
+    background:var(--bg-card);border:1px dashed var(--line);border-radius:99px;
   }
   .bulk-row input,.bulk-row select{
     width:100%;background:var(--bg-input,#101013);border:1px solid var(--line);border-radius:7px;
@@ -383,8 +383,7 @@
   </div>
 
   <div class="edit-banner" id="editBanner">
-    <span><strong>Edit mode.</strong> Changes below — including course/AO/IELTS/deposit edits inside a school's detail panel — only exist in this browser tab. This is a static site with no backend, so nothing here is saved for other visitors or your next reload. Use <strong>Export</strong> to copy the updated data and paste it into the <span style="font-family:var(--font-mono)">COUNTRIES</span> / <span style="font-family:var(--font-mono)">SCHOOLS</span> / <span style="font-family:var(--font-mono)">COURSES</span> arrays in the HTML source before you commit to GitHub.</span>
-    <button id="exportBtn" type="button">Export JSON</button>
+    <span><strong>Edit mode active.</strong> Course and requirement updates are automatically saved directly to the Firebase Firestore Database and will instantly sync across all country pages.</span>
   </div>
 
   <section id="countriesSection">
@@ -411,36 +410,36 @@
 
   <footer>
   <span class="footer-sub">QUB Assessment Notes Generator &middot; All Countries</span>
-    <h2 class="footer-credit">Made by Satish</h2></div>
+    <h2 class="footer-credit">Made by Satish</h2>
   </footer>
 
 </div>
 
-<div class="modal-backdrop" id="modalBackdrop">
-  <div class="modal">
-    <h3>Export current data</h3>
-    <p>Copy this and replace the <span style="font-family:var(--font-mono)">COUNTRIES</span>, <span style="font-family:var(--font-mono)">SCHOOLS</span> and <span style="font-family:var(--font-mono)">COURSES</span> constants near the top of the <span style="font-family:var(--font-mono)">&lt;script&gt;</span> block in this file, then commit. That's the only way an edit becomes permanent on a static GitHub Pages site.</p>
-    <textarea id="exportText" readonly></textarea>
-    <div class="modal-actions">
-      <button id="copyBtn" type="button">Copy</button>
-      <button id="closeModal" type="button" class="primary">Close</button>
-    </div>
-  </div>
-</div>
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-<script>
-  // ---- DATA ----------------------------------------------------------
-  // This is the only place data actually lives on a static site. Edit
-  // mode below is a scratchpad for trying out changes — use "Export" to
-  // get the updated arrays and paste them back in here before you commit.
+  const firebaseConfig = {
+    apiKey: "AIzaSyA-939HBijLVmgukgAp4Vahe0Tzy4xnHmI",
+    authDomain: "qub-admission-generator.firebaseapp.com",
+    projectId: "qub-admission-generator",
+    storageBucket: "qub-admission-generator.firebasestorage.app",
+    messagingSenderId: "812956772194",
+    appId: "1:812956772194:web:da988cd375cfa90a49ae3b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
   let COUNTRIES = [
     { name: "India",      slug: "india" },
     { name: "Bangladesh", slug: "bangladesh" },
     { name: "Pakistan",   slug: "pakistan" },
     { name: "Nigeria",    slug: "nigeria" },
     { name: "Iran",       slug: "iran" },
-    { name: "Egypt",      slug: "egypt" },
-      ];
+    { name: "Egypt",      slug: "egypt" }
+  ];
 
   let SCHOOLS = [
     { name: "HAPP",  slug: "happ" },
@@ -448,13 +447,10 @@
     { name: "QBS",   slug: "qbs" },
     { name: "EEECS", slug: "eeecs" },
     { name: "NBE",   slug: "nbe" },
-    { name: "PHARMACY",   slug: "pharmacy" }
+    { name: "PHARMACY", slug: "pharmacy" }
   ];
 
-  // Course-level data, straight from the AO sheet of the uploaded workbook.
-  // track: "intl" (International Programme) or "gift" (GIFT City Programme)
   let COURSES = [
-    // ---- HAPP ----
     { school:"happ", track:"intl", name:"Anthropology MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"happ", track:"intl", name:"Conflict Transformation and Social Justice MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"happ", track:"intl", name:"Geopolitics MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
@@ -466,18 +462,15 @@
     { school:"happ", track:"intl", name:"Politics MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"happ", track:"intl", name:"Public History MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"happ", track:"intl", name:"Violence, Terrorism and Security MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
-    // ---- Law ----
     { school:"law", track:"intl", name:"Criminology and Criminal Justice LLM", ao:"Joe", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"law", track:"intl", name:"Intellectual Property Law LLM", ao:"Joe", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"law", track:"intl", name:"International Commercial and Business Law LLM", ao:"Elaine", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"law", track:"intl", name:"International Human Rights Law LLM", ao:"Joe", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"law", track:"intl", name:"Law and Technology LLM", ao:"Joe", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
     { school:"law", track:"intl", name:"Law LLM", ao:"Joe", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
-    // ---- NBE ----
     { school:"nbe", track:"intl", name:"Construction and Project Management with Industrial Internship MSC", ao:"Hannah", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"31st August" },
     { school:"nbe", track:"intl", name:"Construction and Project Management MSC", ao:"Hannah", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"31st August" },
     { school:"nbe", track:"gift", name:"Construction and Project Management MSC [GIFT City]", ao:"Hannah", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"15th September" },
-    // ---- QBS ----
     { school:"qbs", track:"intl", name:"Accounting, Finance and Analytics MSC", ao:"Elaine", ielts:"6.0 (5.5)", deposit:"No", deadline:"31st August" },
     { school:"qbs", track:"intl", name:"Actuarial Science MSC", ao:"Radhika", ielts:"6.0 (5.5)", deposit:"No", deadline:"31st August" },
     { school:"qbs", track:"intl", name:"AI in Business MSC", ao:"Michael", ielts:"6.0 (5.5)", deposit:"No", deadline:"31st August" },
@@ -500,14 +493,39 @@
     { school:"qbs", track:"gift", name:"Finance MSCFIN [GIFT City]", ao:"Siobán", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"15th September" },
     { school:"qbs", track:"gift", name:"Financial Analytics MSC [GIFT City]", ao:"David", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"15th September" },
     { school:"qbs", track:"gift", name:"AI in Business MSC [GIFT City]", ao:"Michael", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"15th September" },
-    // ---- EEECS ----
     { school:"eeecs", track:"intl", name:"Artificial Intelligence MSC", ao:"Joe", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"31st August" },
     { school:"eeecs", track:"gift", name:"Artificial Intelligence MSC [GIFT City]", ao:"Joe", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"15th September" },
-    // ---- PHARMACY ----
-    { school:"pharmacy", track:"intl", name:"Industrial Pharmaceutics MSC", ao:"Grace", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"31st August" },
+    { school:"pharmacy", track:"intl", name:"Industrial Pharmaceutics MSC", ao:"Grace", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"31st August" }
   ];
 
-  // ---- STATE -----------------------------------------------------------
+  // Sync to Firebase function
+  async function saveCourseToFirebase(course) {
+    try {
+      const docId = course.name.replace(/[\/.\s]/g, "_");
+      await setDoc(doc(db, "courses", docId), course, { merge: true });
+    } catch (e) {
+      console.error("Error updating course in Firebase: ", e);
+    }
+  }
+
+  // Load Initial Courses from Firebase
+  async function loadCoursesFromFirebase() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "courses"));
+      if (!querySnapshot.empty) {
+        let fetched = [];
+        querySnapshot.forEach((doc) => fetched.push(doc.data()));
+        COURSES = fetched;
+      } else {
+        // If empty, initialize DB with defaults
+        COURSES.forEach(c => saveCourseToFirebase(c));
+      }
+      renderAll();
+    } catch (e) {
+      console.error("Error loading courses: ", e);
+    }
+  }
+
   let editCountriesOn = false;
   let editSchoolsOn = false;
   let expandedSchool = null;
@@ -520,7 +538,6 @@
     return item.name.toLowerCase().includes(query);
   }
 
-  // ---- RENDER ------------------------------------------------------------
   function arrowIcon() {
     return '<svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
   }
@@ -553,20 +570,20 @@
             ${arrowIcon()}
           </a>`;
       });
-      if (list.length === 0) {
-        html = `<div class="empty-note">No country matches "${query}".</div>`;
-      }
+      if (list.length === 0) html = `<div class="empty-note">No country matches "${query}".</div>`;
     }
     grid.innerHTML = html;
 
     if (editCountriesOn) {
       const input = document.getElementById("addCountryInput");
-      input.addEventListener("keydown", e => {
-        if (e.key === "Enter" && input.value.trim()) {
-          COUNTRIES.push({ name: input.value.trim(), slug: slugify(input.value) });
-          renderAll();
-        }
-      });
+      if (input) {
+        input.addEventListener("keydown", e => {
+          if (e.key === "Enter" && input.value.trim()) {
+            COUNTRIES.push({ name: input.value.trim(), slug: slugify(input.value) });
+            renderAll();
+          }
+        });
+      }
       grid.querySelectorAll("[data-remove-country]").forEach(btn => {
         btn.addEventListener("click", () => {
           const slug = btn.getAttribute("data-remove-country");
@@ -617,12 +634,14 @@
 
     if (editSchoolsOn) {
       const input = document.getElementById("addSchoolInput");
-      input.addEventListener("keydown", e => {
-        if (e.key === "Enter" && input.value.trim()) {
-          SCHOOLS.push({ name: input.value.trim(), slug: slugify(input.value) });
-          renderAll();
-        }
-      });
+      if (input) {
+        input.addEventListener("keydown", e => {
+          if (e.key === "Enter" && input.value.trim()) {
+            SCHOOLS.push({ name: input.value.trim(), slug: slugify(input.value) });
+            renderAll();
+          }
+        });
+      }
       grid.querySelectorAll("[data-remove-school]").forEach(btn => {
         btn.addEventListener("click", () => {
           const slug = btn.getAttribute("data-remove-school");
@@ -715,6 +734,7 @@
           if (v) { c.deposit = "Yes"; c.deadline = v; }
           else { c.deposit = "No"; c.deadline = ""; }
         }
+        saveCourseToFirebase(c);
       });
     });
 
@@ -733,6 +753,7 @@
             if (ielts) c.ielts = ielts;
             if (deadline) c.deadline = deadline;
             if (deposit) c.deposit = deposit;
+            saveCourseToFirebase(c);
           }
         });
         renderAll();
@@ -746,17 +767,12 @@
     document.getElementById("resultCount").textContent = query
       ? `${visibleCountries + visibleSchools} match${visibleCountries + visibleSchools === 1 ? "" : "es"}`
       : "";
-    document.getElementById("totalCount").textContent =
-      `${COUNTRIES.length} countries · ${SCHOOLS.length} schools`;
   }
 
   function renderEditUI() {
     document.getElementById("editCountries").classList.toggle("active", editCountriesOn);
     document.getElementById("editSchools").classList.toggle("active", editSchoolsOn);
     document.getElementById("editBanner").classList.toggle("show", editCountriesOn || editSchoolsOn || !!expandedSchool);
-    document.getElementById("countriesHint").textContent = editCountriesOn
-      ? "add or remove countries — subpages must exist separately at /countries/<slug>.html"
-      : "click through to a country's assessment page";
   }
 
   function renderAll() {
@@ -766,7 +782,6 @@
     renderEditUI();
   }
 
-  // ---- EVENTS --------------------------------------------------------
   document.getElementById("searchInput").addEventListener("input", e => {
     query = e.target.value.trim().toLowerCase();
     renderAll();
@@ -782,32 +797,7 @@
     renderAll();
   });
 
-  document.getElementById("exportBtn").addEventListener("click", () => {
-    const text =
-`let COUNTRIES = ${JSON.stringify(COUNTRIES, null, 2)};
-
-let SCHOOLS = ${JSON.stringify(SCHOOLS, null, 2)};
-
-let COURSES = ${JSON.stringify(COURSES, null, 2)};`;
-    document.getElementById("exportText").value = text;
-    document.getElementById("modalBackdrop").classList.add("show");
-  });
-
-  document.getElementById("closeModal").addEventListener("click", () => {
-    document.getElementById("modalBackdrop").classList.remove("show");
-  });
-
-  document.getElementById("copyBtn").addEventListener("click", () => {
-    const ta = document.getElementById("exportText");
-    ta.select();
-    document.execCommand("copy");
-    const btn = document.getElementById("copyBtn");
-    const original = btn.textContent;
-    btn.textContent = "Copied";
-    setTimeout(() => btn.textContent = original, 1200);
-  });
-
-  renderAll();
+  loadCoursesFromFirebase();
 </script>
 
 </body>
