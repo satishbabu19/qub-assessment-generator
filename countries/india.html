@@ -562,7 +562,7 @@
       noteParts.push(engStr);
     } else {
       let reqIelts = courseObj.ielts ? (courseObj.ielts.includes("IELTS") ? courseObj.ielts : `IELTS Academic ${courseObj.ielts}`) : "IELTS Academic 6.5 (6.0)";
-      let engStr = `English – Requires ${reqIelts} or equivalent Standardised Test / Standard XII English waiver.`;
+      let engStr = `English – Requires ${reqIelts} to satisfy course and UKVI requirements.`;
       if (testName) {
         engStr += ` Holds ${testName}${scoreDetails ? ' ' + scoreDetails : ''}${testDate ? ' dated ' + formatDateMMYYYY(testDate) : ''}${verifyReason ? ' - ' + verifyReason : ''}`;
       }
@@ -600,11 +600,11 @@
     let acadStr = "";
     if (status === "Complete") {
       let endFormatted = formatDateMMYYYY(endDate);
-      acadStr += `Attended ${university}, India (${startFormatted} to ${endFormatted}) which is a recognised ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
+      acadStr += `Attended ${university}, India (${startFormatted} to ${endFormatted}) which is a recognized ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
       acadStr += `Awarded a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
     } else {
       let endFormatted = formatDateMMYYYY(endDate);
-      acadStr += `Attending ${university}, India (${startFormatted} to ${endFormatted}) which is a recognised ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
+      acadStr += `Attending ${university}, India (${startFormatted} to ${endFormatted}) which is a recognized ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
       acadStr += `Due to complete a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
     }
 
