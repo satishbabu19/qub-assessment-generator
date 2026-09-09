@@ -258,7 +258,7 @@
 
         <div class="form-group">
           <label for="course">QUB Course</label>
-          <select id="course"></select>
+          <select id="course" onchange="generateNotes()"></select>
         </div>
 
         <div class="row-2">
@@ -331,8 +331,8 @@
         </div>
 
         <div class="btn-group" style="margin-top:auto;">
-          <button type="button" class="btn danger" id="clearBtn">Clear Form</button>
-          <button type="button" class="btn primary" id="generateBtn">Generate Notes</button>
+          <button type="button" class="btn danger" onclick="resetForm()">Clear Form</button>
+          <button type="button" class="btn primary" onclick="generateNotes()">Generate Notes</button>
         </div>
       </div>
 
@@ -344,7 +344,7 @@
     <div class="output-card">
       <div class="output-header">
         <h3>Recommendation / Offer Conditions</h3>
-        <button type="button" class="btn" id="copyRecBtn">Copy Recommendation</button>
+        <button type="button" class="btn" onclick="copyToClipboard('recommendationOutput')">Copy Recommendation</button>
       </div>
       <textarea id="recommendationOutput" class="output-box rec-box" readonly></textarea>
     </div>
@@ -352,7 +352,7 @@
     <div class="output-card">
       <div class="output-header">
         <h3>Generated Assessment Note</h3>
-        <button type="button" class="btn" id="copyNoteBtn">Copy Note</button>
+        <button type="button" class="btn" onclick="copyToClipboard('noteOutput')">Copy Note</button>
       </div>
       <textarea id="noteOutput" class="output-box" readonly></textarea>
     </div>
@@ -364,51 +364,36 @@
   </footer>
 </div>
 
-<!-- Firebase SDKs -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyA-939HBijLVmgukgAp4Vahe0Tzy4xnHmI",
-    authDomain: "qub-admission-generator.firebaseapp.com",
-    projectId: "qub-admission-generator",
-    storageBucket: "qub-admission-generator.firebasestorage.app",
-    messagingSenderId: "812956772194",
-    appId: "1:812956772194:web:da988cd375cfa90a49ae3b"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
+<script>
   const STORAGE_KEY = "qub_bangladesh_form_data";
-  let COURSES = [];
 
-  async function loadCoursesFromFirebase() {
-    try {
-      const querySnapshot = await getDocs(collection(db, "courses"));
-      COURSES = [];
-      querySnapshot.forEach((doc) => COURSES.push(doc.data()));
-      COURSES.sort((a, b) => a.name.localeCompare(b.name));
-      
-      populateCourseDropdown();
-      if (!restoreFromLocalStorage()) {
-        generateNotes();
-      }
-    } catch (e) {
-      console.error("Error fetching courses: ", e);
-    }
-  }
+  const COURSES = [
+    { name: "Business Analytics MSC", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "Accounting, Finance and Analytics MSC", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "Actuarial Science MSC", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "AI in Business MSC", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "Anthropology MA", ielts: "6.0 (5.5)", deposit: "No", deadline: "" },
+    { name: "Artificial Intelligence MSC", ielts: "6.0 (5.5)", deposit: "Yes", deadline: "31st August" },
+    { name: "Construction and Project Management MSC", ielts: "6.0 (5.5)", deposit: "Yes", deadline: "31st August" },
+    { name: "Criminology and Criminal Justice LLM", ielts: "6.0 (5.5)", deposit: "No", deadline: "" },
+    { name: "Digital Business MSC", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "Finance MSCFIN", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "International Relations MA", ielts: "6.0 (5.5)", deposit: "No", deadline: "" },
+    { name: "Law LLM", ielts: "6.0 (5.5)", deposit: "No", deadline: "" },
+    { name: "Management MSC", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "Marketing MSC", ielts: "6.0 (5.5)", deposit: "No", deadline: "31st August" },
+    { name: "Master of Business Administration MBA", ielts: "6.5 (6.0)", deposit: "No", deadline: "31st August" },
+    { name: "Violence, Terrorism and Security MA", ielts: "6.0 (5.5)", deposit: "No", deadline: "" }
+  ];
 
   function populateCourseDropdown() {
     const courseSelect = document.getElementById("course");
-    if (!COURSES.length) return;
     courseSelect.innerHTML = COURSES.map(c => `<option value="${c.name}">${c.name}</option>`).join("");
   }
 
   function getSelectedCourse() {
     const courseName = document.getElementById("course").value;
-    return COURSES.find(c => c.name === courseName) || COURSES[0] || {};
+    return COURSES.find(c => c.name === courseName) || COURSES[0];
   }
 
   function formatDateMMYYYY(monthStr) {
@@ -471,6 +456,7 @@
 
     let noteParts = [];
 
+    // English Assessment
     if (englishStatus === "Met" || englishStatus === "MOI Accepted") {
       let engStr = `English - Holds ${testName || "Standardised Test / MOI Letter"}`;
       if (scoreDetails) engStr += ` ${scoreDetails}`;
@@ -487,6 +473,7 @@
       noteParts.push(engStr);
     }
 
+    // Dynamic Score Display
     let scoreDisplayStr = "";
     const numScore = parseFloat(cgpa);
     const numTotal = parseFloat(totalCgpa);
@@ -503,11 +490,14 @@
       scoreDisplayStr = cgpa ? `Uploaded Transcript displays an overall CGPA of ${cgpa}` : `Uploaded Transcript displays an overall CGPA of XX`;
     }
 
+    // Academic Details
     let startFormatted = formatDateMMYYYY(startDate);
     let endFormatted = formatDateMMYYYY(endDate);
     let acadStr = "";
 
     const HEIText = tierCategory ? `${tierCategory} HEI` : 'recognised HEI';
+    
+    // Dynamic text based on chosen degree level
     let degreePhrase = (degreeLevel === "Master's degree") 
       ? "A Master's degree from a recognised university is considered comparable to a UK Bachelor degree." 
       : "A 4-year Bachelor degree from a recognised university is considered comparable to a UK Bachelor degree.";
@@ -532,6 +522,7 @@
 
     noteParts.push(acadStr);
 
+    // Dynamic Grading Scale Heading
     let scaleHeader = (degreeLevel === "Master's degree")
       ? "For this institution (Master's degree):"
       : "For this institution (4 year Bachelor degree):";
@@ -542,6 +533,7 @@
                    "3.0/4.0 (or 60%) is considered comparable to a UK 2.2 standard.";
     noteParts.push(scaleStr);
 
+    // Dynamic Final Classification Summary
     let degreeLabel = (degreeLevel === "Master's degree") ? "Master's degree" : "Bachelor degree";
     let finalClassStr = `This ${degreeLabel} is considered comparable to a UK ${ukClass} standard.`;
     if (recommendationText) {
@@ -606,12 +598,10 @@
     element.addEventListener("change", generateNotes);
   });
 
-  document.getElementById("clearBtn").addEventListener("click", resetForm);
-  document.getElementById("generateBtn").addEventListener("click", generateNotes);
-  document.getElementById("copyRecBtn").addEventListener("click", () => copyToClipboard('recommendationOutput'));
-  document.getElementById("copyNoteBtn").addEventListener("click", () => copyToClipboard('noteOutput'));
-
-  loadCoursesFromFirebase();
+  populateCourseDropdown();
+  if (!restoreFromLocalStorage()) {
+    generateNotes();
+  }
 </script>
 
 </body>
