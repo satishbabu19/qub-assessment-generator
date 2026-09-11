@@ -495,12 +495,12 @@
     let endFormatted = formatDateMMYYYY(endDate);
     let acadStr = "";
 
-    const HEIText = tierCategory ? `${tierCategory} HEI` : 'recognised HEI';
+    const HEIText = tierCategory ? `${tierCategory} HEI` : 'recognized HEI';
     
     // Dynamic text based on chosen degree level
     let degreePhrase = (degreeLevel === "Master's degree") 
-      ? "A Master's degree from a recognised university is considered comparable to a UK Bachelor degree." 
-      : "A 4-year Bachelor degree from a recognised university is considered comparable to a UK Bachelor degree.";
+      ? "A Master's degree from a recognized university is considered comparable to a UK Bachelor degree." 
+      : "A 4-year Bachelor degree from a recognized university is considered comparable to a UK Bachelor degree.";
 
     if (status === "Complete") {
       acadStr += `Attended ${university}, Bangladesh (${startFormatted} to ${endFormatted}) which is listed (ENIC) as a recognized ${HEIText}. ${degreePhrase}\n\n`;
