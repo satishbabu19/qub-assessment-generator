@@ -568,7 +568,7 @@
     if (scenario === "tier1_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a Bachelor degree in ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
+      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
       `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.5/4.0 to a UK 2.2 standard \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
@@ -577,7 +577,7 @@
     } else if (scenario === "tier2_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a Bachelor degree in ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
+      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
       `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.7/4.0 to a UK 2.2 standard.  \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
@@ -586,7 +586,7 @@
     } else if (scenario === "tier1_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a Bachelor degree in ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
+      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
       `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.5/4.0 to a UK 2.2 standard \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
@@ -595,7 +595,7 @@
     } else if (scenario === "tier2_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a Bachelor degree in ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
+      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
       `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.7/4.0 to a UK 2.2 standard.  \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
@@ -607,9 +607,9 @@
 
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector university (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a Bachelor of ${degreeSubject} in (${endYear}). Uploaded transcripts and award cert display a final score of ${bPct}. \n\n` +
+      `Awarded a ${degreeSubject} in (${endYear}). Uploaded transcripts and award cert display a final score of ${bPct}. \n\n` +
       `Attended ${masterUni}, Pakistan (${masterStartDate} to ${masterEndDate}) which is a recognised ${sector} sector HEI (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree.  \n\n` +
-      `Awarded a Master of ${masterSubject} in (${masterEndYear}). Uploaded transcripts and award cert display a final score of ${mPct}. According to QUB guidelines: \n` +
+      `Awarded a ${masterSubject} in (${masterEndYear}). Uploaded transcripts and award cert display a final score of ${mPct}. According to QUB guidelines: \n` +
       `a 2 year Bachelor degree with 60% followed by a Master’s degree with 70% can be considered comparable to a UK Bachelor degree of 2.1 standard.  \n` +
       `A 2 year Bachelor degree with 55% followed by a Master’s degree with 60% can be considered comparable to a UK Bachelor degree of 2.2 standard. \n\n` +
       `As this applicant attained ${bPct} in the Bachelor degree and ${mPct} in the Master’s degree, these 2 qualifications combined could be considered comparable to a UK Bachelor degree of ${ukClass} standard. \n\n` +
