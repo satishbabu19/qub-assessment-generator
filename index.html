@@ -56,6 +56,24 @@
     text-transform:uppercase;
     color:var(--text-faint);
   }
+  
+  /* Course Manager Navigation Button */
+  .nav-btn{
+    display:inline-flex;align-items:center;gap:7px;
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    padding:7px 14px;
+    border-radius:999px;
+    font-size:12.5px;
+    color:var(--text-dim);
+    font-family:var(--font-mono);
+    letter-spacing:.03em;
+    text-decoration:none;
+    margin-left:auto;
+    transition:.15s ease;
+  }
+  .nav-btn:hover{border-color:var(--qub-gold);color:var(--text);}
+
   h1{
     font-family:var(--font-display);
     font-weight:500;
@@ -322,7 +340,7 @@
   .bulk-row{
     display:grid;grid-template-columns:1.2fr 1fr 1fr 0.8fr auto;gap:8px;
     padding:9px 10px;margin-bottom:8px;
-    background:var(--bg-card);border:1px dashed var(--line);border-radius:9px;
+    background:var(--bg-card);border:1px dashed var(--line);border-radius:99px;
   }
   .bulk-row input,.bulk-row select{
     width:100%;background:var(--bg-input,#101013);border:1px solid var(--line);border-radius:7px;
@@ -370,6 +388,8 @@
       <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Queen%E2%80%99s_Red_Log.svg" alt="Queen's University Belfast">
       <div class="divider"></div>
       <span class="kicker">Admissions &middot; Postgraduate</span>
+      <!-- Course Manager Redirect Button -->
+      <a href="course-manager.html" class="nav-btn">⚙️ Course Manager</a>
     </div>
     <h1>Assessment Notes <em>Generator</em></h1>
     <p class="subtitle">Country-by-country qualification comparability and offer-condition notes, built from the AO course lookup and each country's assessment template.</p>
@@ -411,7 +431,7 @@
 
   <footer>
   <span class="footer-sub">QUB Assessment Notes Generator &middot; All Countries</span>
-    <h2 class="footer-credit">Made by Satish</h2></div>
+    <h2 class="footer-credit">Made by Satish</h2>
   </footer>
 
 </div>
@@ -429,10 +449,6 @@
 </div>
 
 <script>
-  // ---- DATA ----------------------------------------------------------
-  // This is the only place data actually lives on a static site. Edit
-  // mode below is a scratchpad for trying out changes — use "Export" to
-  // get the updated arrays and paste them back in here before you commit.
   let COUNTRIES = [
     { name: "India",      slug: "india" },
     { name: "Bangladesh", slug: "bangladesh" },
@@ -440,7 +456,7 @@
     { name: "Nigeria",    slug: "nigeria" },
     { name: "Iran",       slug: "iran" },
     { name: "Egypt",      slug: "egypt" },
-      ];
+  ];
 
   let SCHOOLS = [
     { name: "HAPP",  slug: "happ" },
@@ -451,8 +467,6 @@
     { name: "PHARMACY",   slug: "pharmacy" }
   ];
 
-  // Course-level data, straight from the AO sheet of the uploaded workbook.
-  // track: "intl" (International Programme) or "gift" (GIFT City Programme)
   let COURSES = [
     // ---- HAPP ----
     { school:"happ", track:"intl", name:"Anthropology MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
@@ -507,7 +521,6 @@
     { school:"pharmacy", track:"intl", name:"Industrial Pharmaceutics MSC", ao:"Grace", ielts:"6.0 (5.5)", deposit:"Yes", deadline:"31st August" },
   ];
 
-  // ---- STATE -----------------------------------------------------------
   let editCountriesOn = false;
   let editSchoolsOn = false;
   let expandedSchool = null;
@@ -520,7 +533,6 @@
     return item.name.toLowerCase().includes(query);
   }
 
-  // ---- RENDER ------------------------------------------------------------
   function arrowIcon() {
     return '<svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
   }
@@ -746,8 +758,6 @@
     document.getElementById("resultCount").textContent = query
       ? `${visibleCountries + visibleSchools} match${visibleCountries + visibleSchools === 1 ? "" : "es"}`
       : "";
-    document.getElementById("totalCount").textContent =
-      `${COUNTRIES.length} countries · ${SCHOOLS.length} schools`;
   }
 
   function renderEditUI() {
@@ -766,7 +776,6 @@
     renderEditUI();
   }
 
-  // ---- EVENTS --------------------------------------------------------
   document.getElementById("searchInput").addEventListener("input", e => {
     query = e.target.value.trim().toLowerCase();
     renderAll();
