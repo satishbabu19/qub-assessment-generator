@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QUB Course Data Manager</title>
+  <style>
+    :root {
+      --bg-dark: #000000;
+      --card-bg: rgba(28, 28, 30, 0.85);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-blue: #0A84FF;
+      --accent-red: #FF453A;
+      --accent-green: #30D158;
+      --text-main: #FFFFFF;
+      --text-muted: #8E8E93;
+      --input-bg: #2C2C2E;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .btn {
+      background-color: var(--accent-blue);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      transition: opacity 0.2s, background-color 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn-secondary {
+      background-color: var(--input-bg);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      opacity: 1;
+    }
+
+    .btn-green {
+      background-color: var(--accent-green);
+      color: #000;
+    }
+
+    .btn-red {
+      background-color: var(--accent-red);
+      color: #fff;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .search-bar {
+      width: 100%;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .pill-yes { background: rgba(48, 209, 88, 0.2); color: #30D158; }
+    .pill-no { background: rgba(255, 69, 58, 0.2); color: #FF453A; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>QUB Course Manager (`courses.js`)</h1>
+      <div class="header-actions">
+        <!-- Home Redirect Button -->
+        <a href="https://satishbabu19.github.io/qub-assessment-generator/" class="btn btn-secondary">🏠 Home Page</a>
+        <!-- Export Button -->
+        <button class="btn btn-green" onclick="exportCoursesJS()">⬇️ Export updated courses.js</button>
+      </div>
+    </div>
+
+    <!-- Course Add/Edit Form -->
+    <div class="card">
+      <h2 id="form-title" style="font-size: 18px; margin-top:0; margin-bottom: 16px;">Add New Course</h2>
+      <form id="course-form" onsubmit="handleFormSubmit(event)">
+        <input type="hidden" id="edit-index" value="-1">
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>School Code</label>
+            <input type="text" id="school" placeholder="e.g. qbs, happ, law" required>
+          </div>
+
+          <div class="form-group">
+            <label>Track</label>
+            <select id="track">
+              <option value="intl">intl</option>
+              <option value="home">home</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Course Title</label>
+            <input type="text" id="name" placeholder="e.g. Finance MSCFIN" required>
+          </div>
+
+          <div class="form-group">
+            <label>Assigned AO</label>
+            <input type="text" id="ao" placeholder="e.g. Danielle, Joe" required>
+          </div>
+
+          <div class="form-group">
+            <label>IELTS Requirement</label>
+            <input type="text" id="ielts" placeholder="e.g. 6.0 (5.5)" required>
+          </div>
+
+          <div class="form-group">
+            <label>Deposit Required?</label>
+            <select id="deposit">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Deadline</label>
+            <input type="text" id="deadline" placeholder="e.g. 31st August">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-red" id="btn-cancel" onclick="resetForm()" style="display:none;">Cancel</button>
+          <button type="submit" class="btn" id="btn-submit">Save Course</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Live Data Table -->
+    <div class="card">
+      <input type="text" class="search-bar" id="search" placeholder="Search by course name, school, or AO..." oninput="renderTable()">
+      
+      <table>
+        <thead>
+          <tr>
+            <th>School</th>
+            <th>Track</th>
+            <th>Course Name</th>
+            <th>AO</th>
+            <th>IELTS</th>
+            <th>Deposit</th>
+            <th>Deadline</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="course-table-body">
+          <!-- Rows dynamically injected -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="courses.js"></script>
+
+  <script>
+    let courseList = typeof COURSES !== 'undefined' ? [...COURSES] : [
+      { school:"happ", track:"intl", name:"Anthropology MA", ao:"Danielle", ielts:"6.0 (5.5)", deposit:"No", deadline:"" },
+      { school:"qbs", track:"intl", name:"Finance MSCFIN", ao:"Siobán", ielts:"6.0 (5.5)", deposit:"No", deadline:"31st August" }
+    ];
+
+    function renderTable() {
+      const tbody = document.getElementById('course-table-body');
+      const searchTerm = document.getElementById('search').value.toLowerCase();
+      tbody.innerHTML = '';
+
+      courseList.forEach((course, index) => {
+        if (
+          course.name.toLowerCase().includes(searchTerm) ||
+          course.school.toLowerCase().includes(searchTerm) ||
+          course.ao.toLowerCase().includes(searchTerm)
+        ) {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><strong>${course.school.toUpperCase()}</strong></td>
+            <td>${course.track}</td>
+            <td>${course.name}</td>
+            <td>${course.ao}</td>
+            <td>${course.ielts}</td>
+            <td><span class="pill ${course.deposit === 'Yes' ? 'pill-yes' : 'pill-no'}">${course.deposit}</span></td>
+            <td>${course.deadline || '—'}</td>
+            <td class="actions-cell">
+              <button class="btn btn-sm" onclick="editCourse(${index})">Edit</button>
+              <button class="btn btn-sm btn-red" onclick="deleteCourse(${index})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        }
+      });
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const index = parseInt(document.getElementById('edit-index').value);
+
+      const courseData = {
+        school: document.getElementById('school').value.trim().toLowerCase(),
+        track: document.getElementById('track').value,
+        name: document.getElementById('name').value.trim(),
+        ao: document.getElementById('ao').value.trim(),
+        ielts: document.getElementById('ielts').value.trim(),
+        deposit: document.getElementById('deposit').value,
+        deadline: document.getElementById('deadline').value.trim()
+      };
+
+      if (index === -1) {
+        courseList.push(courseData);
+      } else {
+        courseList[index] = courseData;
+      }
+
+      resetForm();
+      renderTable();
+    }
+
+    function editCourse(index) {
+      const course = courseList[index];
+      document.getElementById('edit-index').value = index;
+      document.getElementById('school').value = course.school;
+      document.getElementById('track').value = course.track;
+      document.getElementById('name').value = course.name;
+      document.getElementById('ao').value = course.ao;
+      document.getElementById('ielts').value = course.ielts;
+      document.getElementById('deposit').value = course.deposit;
+      document.getElementById('deadline').value = course.deadline;
+
+      document.getElementById('form-title').innerText = "Edit Course";
+      document.getElementById('btn-submit').innerText = "Update Course";
+      document.getElementById('btn-cancel').style.display = "inline-block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteCourse(index) {
+      if (confirm(`Are you sure you want to delete "${courseList[index].name}"?`)) {
+        courseList.splice(index, 1);
+        renderTable();
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('course-form').reset();
+      document.getElementById('edit-index').value = "-1";
+      document.getElementById('form-title').innerText = "Add New Course";
+      document.getElementById('btn-submit').innerText = "Save Course";
+      document.getElementById('btn-cancel').style.display = "none";
+    }
+
+    function exportCoursesJS() {
+      const jsContent = `const COURSES = ${JSON.stringify(courseList, null, 2)};\n`;
+      const blob = new Blob([jsContent], { type: 'text/javascript' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'courses.js';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
