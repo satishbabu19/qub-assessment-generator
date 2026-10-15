@@ -282,46 +282,22 @@
 
       <!-- Course & Requirements -->
       <div class="card">
-        <div class="card-title">English Language Requirements</div>
+        <div class="card-title">Course & Document Check</div>
+
+        <div class="form-group">
+          <label for="course">QUB Course</label>
+          <select id="course" onchange="generateNotes()"></select>
+        </div>
 
         <div class="row-2">
           <div class="form-group">
             <label for="english">English Status</label>
             <select id="english" onchange="generateNotes()">
-              <option value="Verified">Verified / Met</option>
+              <option value="">-- Select Reason --</option>
               <option value="Not Met">Not Met</option>
+              <option value="Met">Met</option>
             </select>
           </div>
-          <div class="form-group">
-            <label for="testName">1. Test Name</label>
-            <input type="text" id="testName" value="" placeholder="e.g. IELTS Academic / Standard XII">
-          </div>
-        </div>
-
-        <div class="row-2">
-          <div class="form-group">
-            <label for="scoreDetails">2. Test Score</label>
-            <input type="text" id="scoreDetails" value="" placeholder="e.g. 6.5 overall (6.0 all) / 75%">
-          </div>
-          <div class="form-group">
-            <label for="testDate">3. Test Date (MM/YYYY)</label>
-            <input type="month" id="testDate" value="">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="verifyReason">4. Verify / Reason</label>
-          <input type="text" id="verifyReason" value="" placeholder="e.g. Verified / Insufficient score / Outside Validity Period">
-        </div>
-
-        <div class="card-title" style="margin-top:8px;">Course & Document Check</div>
-
-        <div class="form-group">
-          <label for="course">Select QUB Course</label>
-          <select id="course" onchange="generateNotes()"></select>
-        </div>
-
-        <div class="row-2">
           <div class="form-group">
             <label for="deposit">Deposit Required</label>
             <select id="deposit">
@@ -330,9 +306,53 @@
               <option value="No">No</option>
             </select>
           </div>
+        </div>
+
+        <div class="row-2">
           <div class="form-group">
-            <label for="missingDocs">Missing Documents (if any)</label>
-            <input type="text" id="missingDocs" value="" placeholder="e.g. final transcript, degree certificate">
+            <label for="transcripts">Transcripts / Marksheets</label>
+            <select id="transcripts">
+              <option value="">-- Select Reason --</option>
+              <option value="Provided">Provided</option>
+              <option value="Not Provided">Not Provided</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="degreeCert">Degree Cert</label>
+            <select id="degreeCert">
+              <option value="">-- Select Reason --</option>
+              <option value="Provided">Provided</option>
+              <option value="Not Provided">Not Provided</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card-title" style="margin-top:8px;">English Qualification Details</div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label for="testName">Test / Board Name</label>
+            <input type="text" id="testName" value="" placeholder="e.g. IELTS Academic">
+          </div>
+          <div class="form-group">
+            <label for="scoreDetails">Score / Marks</label>
+            <input type="text" id="scoreDetails" value="" placeholder="e.g. 6.5 overall (6.0 all)">
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label for="testDate">Date / Year (MM/YYYY)</label>
+            <input type="month" id="testDate" value="">
+          </div>
+          <div class="form-group">
+            <label for="verifyReason">Verification Status</label>
+            <select id="verifyReason">
+              <option value="">-- Select Status --</option>
+              <option value="Verified">Verified</option>
+              <option value="Insufficient Score">Insufficient Score</option>
+              <option value="Outside Validity Period">Outside Validity Period</option>
+            </select>
           </div>
         </div>
 
@@ -502,7 +522,8 @@
 
     let depositMode = document.getElementById("deposit").value;
     let isDepositRequired = depositMode === "Auto" ? courseObj.deposit === "Yes" : depositMode === "Yes";
-    const missingDocs = document.getElementById("missingDocs").value.trim();
+    const transcripts = document.getElementById("transcripts").value;
+    const degreeCert = document.getElementById("degreeCert").value;
 
     // Master's degree variables
     const masterUni = document.getElementById("masterUniversity").value.trim() || "UNI NAME";
@@ -518,49 +539,61 @@
     let engStr = "";
     let formattedTestDate = testDate ? formatDateMMYYYY(testDate) : "";
 
-    if (englishStatus === "Verified" || englishStatus === "Met") {
-      let statusTag = verifyReason ? `[${verifyReason}]` : "[Verified]";
-      let details = [testName, scoreDetails, formattedTestDate ? `dated ${formattedTestDate}` : "", statusTag].filter(Boolean).join(" ");
+    if (englishStatus === "Met") {
+      let details = [testName || "English Test", scoreDetails, formattedTestDate ? `dated ${formattedTestDate}` : "", verifyReason ? `[${verifyReason}]` : ""].filter(Boolean).join(" ");
       engStr = `English - Holds ${details} which meets course and UKVI requirements.`;
     } else {
       engStr = `English - Requires ${reqIelts} to satisfy course and UKVI requirements.`;
       if (testName) {
-        let reasonTag = verifyReason || scoreDetails || "Insufficient score / Outside Validity Period";
-        engStr += ` Holds ${testName} - [${reasonTag}]`;
+        engStr += ` Holds ${testName}${scoreDetails ? ' ' + scoreDetails : ''}${formattedTestDate ? ' dated ' + formattedTestDate : ''}${verifyReason ? ' - ' + verifyReason : ''}`;
       }
     }
 
-    // RECOMMENDATION CONDITIONS
-    let recConditions = [];
-
-    if (englishStatus === "Not Met") {
-      recConditions.push(`IELTS ${courseObj.ielts}`);
-    }
-
+    // ACADEMIC & DOCUMENT CONDITION EVALUATIONS
+    let academicCondition = "";
     if (scenario.includes("ongoing")) {
       if (scenario.includes("punjab_llm")) {
-        recConditions.push("successful completion of degree with 50%");
+        academicCondition = "Successful completion of degree with 50%";
       } else {
-        recConditions.push(`completion of degree with ${cgpa}/4.0`);
+        academicCondition = `Completion of degree with ${cgpa}/4.0`;
+      }
+      if (transcripts === "Not Provided" && degreeCert === "Not Provided") {
+        academicCondition += " + OS Verify Quals Pakistan";
+      }
+    } else {
+      if (transcripts === "Not Provided" || degreeCert === "Not Provided") {
+        let missingList = [];
+        if (transcripts === "Not Provided") missingList.push("Transcripts");
+        if (degreeCert === "Not Provided") missingList.push("Degree Award Cert");
+        academicCondition = `OS Verify Quals Pakistan (${missingList.join(" and ")})`;
       }
     }
 
-    if (isDepositRequired) {
-      recConditions.push("deposit");
-    }
+    let depositCondition = isDepositRequired ? `Deposit (£1000 by ${courseObj.deadline || "deadline"})` : "";
+    let englishCondition = (englishStatus === "Not Met") ? `IELTS ${courseObj.ielts}` : "";
 
-    if (missingDocs) {
-      recConditions.push(`submission of ${missingDocs}`);
-    }
-
+    // BUILD RECOMMENDATION / OFFER CONDITIONS
+    let conditionsArr = [academicCondition, englishCondition, depositCondition].filter(c => c !== "");
     let recommendLine = "";
-    if (recConditions.length > 0) {
-      recommendLine = `Recommend: conditional offer based on ${recConditions.join(", ")}.`;
+    if (englishStatus === "Met" && conditionsArr.length === 0) {
+      recommendLine = "Recommend: Unconditional Offer – (SB-UQ)";
     } else {
-      recommendLine = "Recommend: unconditional offer.";
+      recommendLine = `Recommend: Conditional Offer based on ${conditionsArr.join(" + ")} – (SB-UQ)`;
     }
 
     let englishEvalSummary = engStr + "\n\n";
+
+    // DOCUMENT STATUS PHRASE
+    let docStatusPhrase = "";
+    if (transcripts === "Provided" && degreeCert === "Provided") {
+      docStatusPhrase = "Transcripts and degree award certificates are provided.";
+    } else if (transcripts === "Provided") {
+      docStatusPhrase = "Transcripts provided. Final degree award certificate is missing.";
+    } else if (degreeCert === "Provided") {
+      docStatusPhrase = "Final degree award certificate provided. Transcripts is missing.";
+    } else {
+      docStatusPhrase = "Transcripts and degree award certificate are missing.";
+    }
 
     // Template Text Assembly
     let noteText = "";
@@ -568,7 +601,8 @@
     if (scenario === "tier1_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
+      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `For this tier 1 institution: \n` +
       `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.5/4.0 to a UK 2.2 standard \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
@@ -577,7 +611,8 @@
     } else if (scenario === "tier2_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
+      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `For this tier 2 institution: \n` +
       `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.7/4.0 to a UK 2.2 standard.  \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
@@ -586,7 +621,8 @@
     } else if (scenario === "tier1_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 1 institution: \n` +
+      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `For this tier 1 institution: \n` +
       `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.5/4.0 to a UK 2.2 standard \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
@@ -595,7 +631,8 @@
     } else if (scenario === "tier2_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. For this tier 2 institution: \n` +
+      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `For this tier 2 institution: \n` +
       `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
       `2.7/4.0 to a UK 2.2 standard.  \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
@@ -609,7 +646,8 @@
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector university (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree. \n\n` +
       `Awarded a ${degreeSubject} in (${endYear}). Uploaded transcripts and award cert display a final score of ${bPct}. \n\n` +
       `Attended ${masterUni}, Pakistan (${masterStartDate} to ${masterEndDate}) which is a recognised ${sector} sector HEI (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree.  \n\n` +
-      `Awarded a ${masterSubject} in (${masterEndYear}). Uploaded transcripts and award cert display a final score of ${mPct}. According to QUB guidelines: \n` +
+      `Awarded a ${masterSubject} in (${masterEndYear}). Uploaded transcripts and award cert display a final score of ${mPct}. ${docStatusPhrase}\n\n` +
+      `According to QUB guidelines: \n` +
       `a 2 year Bachelor degree with 60% followed by a Master’s degree with 70% can be considered comparable to a UK Bachelor degree of 2.1 standard.  \n` +
       `A 2 year Bachelor degree with 55% followed by a Master’s degree with 60% can be considered comparable to a UK Bachelor degree of 2.2 standard. \n\n` +
       `As this applicant attained ${bPct} in the Bachelor degree and ${mPct} in the Master’s degree, these 2 qualifications combined could be considered comparable to a UK Bachelor degree of ${ukClass} standard. \n\n` +
@@ -618,13 +656,15 @@
     } else if (scenario === "punjab_llm_complete") {
       noteText = englishEvalSummary +
       `Attended University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
+      `Awarded a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
+      `Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "punjab_llm_ongoing") {
       noteText = englishEvalSummary +
       `Attending University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
+      `Due to complete a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
+      `Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
       `${recommendLine}`;
     }
 
