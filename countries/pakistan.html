@@ -558,14 +558,14 @@
         academicCondition = `Completion of degree with ${cgpa}/4.0`;
       }
       if (transcripts === "Not Provided" && degreeCert === "Not Provided") {
-        academicCondition += " + OS Verify Quals Pakistan";
+        academicCondition += " + OS Verify Quals ";
       }
     } else {
       if (transcripts === "Not Provided" || degreeCert === "Not Provided") {
         let missingList = [];
         if (transcripts === "Not Provided") missingList.push("Transcripts");
         if (degreeCert === "Not Provided") missingList.push("Degree Award Cert");
-        academicCondition = `OS Verify Quals Pakistan (${missingList.join(" and ")})`;
+        academicCondition = `OS Verify Quals (${missingList.join(" and ")})`;
       }
     }
 
