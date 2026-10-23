@@ -450,7 +450,39 @@
 
   function populateCourseDropdown() {
     const courseSelect = document.getElementById("course");
-    courseSelect.innerHTML = COURSES.map(c => `<option value="${c.name}">${c.name}</option>`).join("");
+    
+    // Group courses by school code
+    const groups = {
+      happ: { label: "HAPP (Arts, Humanities and Social Sciences)", items: [] },
+      law: { label: "Law (School of Law)", items: [] },
+      nbe: { label: "NBE (Natural and Built Environment)", items: [] },
+      qbs: { label: "QBS (Queen's Business School)", items: [] },
+      eeecs: { label: "EEECS (Electronics, Electrical Engineering and Computer Science)", items: [] },
+      pharmacy: { label: "Pharmacy (School of Pharmacy)", items: [] }
+    };
+
+    COURSES.forEach(c => {
+      if (groups[c.school]) {
+        groups[c.school].items.push(c);
+      } else {
+        if (!groups["other"]) groups["other"] = { label: "Other", items: [] };
+        groups["other"].items.push(c);
+      }
+    });
+
+    let html = "";
+    Object.keys(groups).forEach(key => {
+      const g = groups[key];
+      if (g.items.length > 0) {
+        html += `<optgroup label="${g.label}">`;
+        g.items.forEach(c => {
+          html += `<option value="${c.name}">${c.name}</option>`;
+        });
+        html += `</optgroup>`;
+      }
+    });
+
+    courseSelect.innerHTML = html;
   }
 
   function getSelectedCourse() {
