@@ -223,12 +223,12 @@
 
         <div class="row-2">
           <div class="form-group">
-            <label for="cgpa">CGPA / Score</label>
-            <input type="number" step="0.01" id="cgpa" value="" placeholder="e.g. 3.1 or 65">
+            <label for="cgpa">Marks Obtained</label>
+            <input type="number" step="0.01" id="cgpa" value="" placeholder="e.g. 3450 or 62.5">
           </div>
           <div class="form-group">
-            <label for="totalScale">Scale / Total</label>
-            <input type="number" step="0.1" id="totalScale" value="4.0" placeholder="4.0 or 100">
+            <label for="totalScale">Total Maximum Marks</label>
+            <input type="number" step="0.1" id="totalScale" value="100" placeholder="e.g. 5000 or 100">
           </div>
         </div>
 
@@ -542,8 +542,8 @@
     const endYear = getYearText(document.getElementById("endDate").value);
     const degreeSubject = document.getElementById("degreeSubject").value.trim() || "SUBJECT";
     
-    const cgpa = document.getElementById("cgpa").value.trim() || "XXX";
-    const totalScale = document.getElementById("totalScale").value.trim() || "4.0";
+    const marksObtained = document.getElementById("cgpa").value.trim();
+    const totalMarks = document.getElementById("totalScale").value.trim() || "100";
     const ukClass = document.getElementById("ukClass").value;
     
     const courseObj = getSelectedCourse();
@@ -588,7 +588,7 @@
       if (scenario.includes("punjab_llm")) {
         academicCondition = "Successful completion of degree with 50%";
       } else {
-        academicCondition = `Completion of degree with ${cgpa}/4.0`;
+        academicCondition = `Completion of degree with XX%`;
       }
       if (transcripts === "Not Provided" && degreeCert === "Not Provided") {
         academicCondition += " + OS Verify Quals ";
@@ -636,55 +636,71 @@
       completionPrefix = "Due to complete";
     }
 
+    // Automatic Percentage Calculation from Marks Obtained & Total Maximum Marks
+    let scoreDisplayStr = "";
+    const numObtained = parseFloat(marksObtained);
+    const numTotal = parseFloat(totalMarks);
+
+    if (!isNaN(numObtained) && !isNaN(numTotal) && numTotal > 0) {
+      const calculatedPct = ((numObtained / numTotal) * 100).toFixed(2);
+      if (numTotal === 100) {
+        scoreDisplayStr = `Uploaded Transcript displays an overall score of ${marksObtained}%`;
+      } else {
+        scoreDisplayStr = `Uploaded Transcript displays an overall score of ${marksObtained} out of ${totalMarks} (Avg - ${calculatedPct}% - Manual Calculation)`;
+      }
+    } else {
+      scoreDisplayStr = marksObtained ? `Uploaded Transcript displays an overall score of ${marksObtained}%` : `Uploaded Transcript displays an overall score of XX%`;
+    }
+
     // Template Text Assembly
     let noteText = "";
 
     if (scenario === "tier1_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `${completionPrefix} a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endYear}. ${scoreDisplayStr}. ${docStatusPhrase}\n\n` +
       `For this tier 1 institution: \n` +
-      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
-      `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
-      `2.5/4.0 to a UK 2.2 standard \n\n` +
+      `a score of 70% is considered comparable to a UK First Class  \n` +
+      `a score of 58% is considered comparable to a UK 2.1 standard  \n` +
+      `53% to a UK 2.2 standard \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "tier2_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `${completionPrefix} a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endYear}. ${scoreDisplayStr}. ${docStatusPhrase}\n\n` +
       `For this tier 2 institution: \n` +
-      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
-      `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
-      `2.7/4.0 to a UK 2.2 standard.  \n\n` +
+      `a score of 70% is considered comparable to a UK First Class  \n` +
+      `a score of 60% is considered comparable to a UK 2.1 standard  \n` +
+      `55% to a UK 2.2 standard.  \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "tier1_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. ${scoreDisplayStr} to date. ${docStatusPhrase}\n\n` +
       `For this tier 1 institution: \n` +
-      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
-      `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
-      `2.5/4.0 to a UK 2.2 standard \n\n` +
+      `a score of 70% is considered comparable to a UK First Class  \n` +
+      `a score of 58% is considered comparable to a UK 2.1 standard  \n` +
+      `53% to a UK 2.2 standard \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "tier2_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. ${scoreDisplayStr} to date. ${docStatusPhrase}\n\n` +
       `For this tier 2 institution: \n` +
-      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
-      `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
-      `2.7/4.0 to a UK 2.2 standard.  \n\n` +
+      `a score of 70% is considered comparable to a UK First Class  \n` +
+      `a score of 60% is considered comparable to a UK 2.1 standard  \n` +
+      `55% to a UK 2.2 standard.  \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "bachelor_plus_master") {
-      let bPct = (totalScale === "100" || totalScale === "100%") ? `${cgpa}%` : `${cgpa}/${totalScale}`;
+      let bPct = scoreDisplayStr;
       let mPct = (masterTotal === "100" || masterTotal === "100%") ? `${masterScore}%` : `${masterScore}/${masterTotal}`;
 
       noteText = englishEvalSummary +
@@ -695,20 +711,20 @@
       `According to QUB guidelines: \n` +
       `a 2 year Bachelor degree with 60% followed by a Master’s degree with 70% can be considered comparable to a UK Bachelor degree of 2.1 standard.  \n` +
       `A 2 year Bachelor degree with 55% followed by a Master’s degree with 60% can be considered comparable to a UK Bachelor degree of 2.2 standard. \n\n` +
-      `As this applicant attained ${bPct} in the Bachelor degree and ${mPct} in the Master’s degree, these 2 qualifications combined could be considered comparable to a UK Bachelor degree of ${ukClass} standard. \n\n` +
+      `As this applicant attained these scores in the Bachelor and Master’s degrees, these 2 qualifications combined could be considered comparable to a UK Bachelor degree of ${ukClass} standard. \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "punjab_llm_complete") {
       noteText = englishEvalSummary +
       `Attended University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `${completionPrefix} a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a 5 year Bachelor degree in Law in ${endYear}. ${scoreDisplayStr}. ${docStatusPhrase}\n\n` +
       `Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "punjab_llm_ongoing") {
       noteText = englishEvalSummary +
       `Attending University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `${completionPrefix} a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a 5 year Bachelor degree in Law in ${endYear}. ${scoreDisplayStr}. ${docStatusPhrase}\n\n` +
       `Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
       `${recommendLine}`;
     }
