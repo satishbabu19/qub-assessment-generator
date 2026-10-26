@@ -70,20 +70,15 @@
   }
   h1 em { font-style: italic; color: var(--qub-gold); }
   .subtitle { color: var(--text-dim); font-size: 15px; line-height: 1.6; max-width: 58ch; margin: 0 0 28px; }
-  .tricolour {
-    height: 3px; width: 100%;
-    background: linear-gradient(90deg, var(--qub-blue) 0 33.3%, var(--qub-gold) 33.3% 66.6%, var(--qub-red) 66.6% 100%);
-    border-radius: 2px; margin-bottom: 36px; opacity: .9;
-
-    /* India Flag Bar */
-.in-flag-bar {
-  height: 4px; 
-  width: 100%;
-  background: linear-gradient(90deg, #FF9933 0% 33.3%, #ffffff 33.3% 66.6%, #138808 66.6% 100%);
-  border-radius: 2px; 
-  margin-bottom: 28px; 
-  opacity: .9;
-}
+  
+  /* India Flag Bar */
+  .in-flag-bar {
+    height: 4px; 
+    width: 100%;
+    background: linear-gradient(90deg, #FF9933 0% 33.3%, #ffffff 33.3% 66.6%, #138808 66.6% 100%);
+    border-radius: 2px; 
+    margin-bottom: 28px; 
+    opacity: .9;
   }
 
   /* Form Layout */
@@ -181,7 +176,7 @@
     </div>
     <h1>India Assessment <em>Note Generator</em></h1>
     <p class="subtitle">Dynamic credential evaluation form for applicant qualifications from India, computed live based on Queen's University Belfast entry standard formulas.</p>
-    <div class="ind-flag-bar"></div>
+    <div class="in-flag-bar"></div>
   </header>
 
   <form id="indiaForm" onsubmit="return false;">
@@ -453,7 +448,39 @@
 
   function populateCourseDropdown() {
     const courseSelect = document.getElementById("course");
-    courseSelect.innerHTML = COURSES.map(c => `<option value="${c.name}">${c.name}</option>`).join("");
+    
+    // Group courses by school code
+    const groups = {
+      happ: { label: "HAPP (Arts, Humanities and Social Sciences)", items: [] },
+      law: { label: "Law (School of Law)", items: [] },
+      nbe: { label: "NBE (Natural and Built Environment)", items: [] },
+      qbs: { label: "QBS (Queen's Business School)", items: [] },
+      eeecs: { label: "EEECS (Electronics, Electrical Engineering and Computer Science)", items: [] },
+      pharmacy: { label: "Pharmacy (School of Pharmacy)", items: [] }
+    };
+
+    COURSES.forEach(c => {
+      if (groups[c.school]) {
+        groups[c.school].items.push(c);
+      } else {
+        if (!groups["other"]) groups["other"] = { label: "Other", items: [] };
+        groups["other"].items.push(c);
+      }
+    });
+
+    let html = "";
+    Object.keys(groups).forEach(key => {
+      const g = groups[key];
+      if (g.items.length > 0) {
+        html += `<optgroup label="${g.label}">`;
+        g.items.forEach(c => {
+          html += `<option value="${c.name}">${c.name}</option>`;
+        });
+        html += `</optgroup>`;
+      }
+    });
+
+    courseSelect.innerHTML = html;
   }
 
   function getSelectedCourse() {
@@ -605,18 +632,25 @@
       scoreDisplayStr = cgpa ? `Uploaded Transcript displays an overall score of ${cgpa}%` : `Uploaded Transcript displays an overall score of XX%`;
     }
 
+    // Determine completion verb prefix based on status and degreeCert status
+    let completionPrefix = "";
+    if (status === "Complete") {
+      completionPrefix = (degreeCert === "Provided") ? "Awarded" : "Completed";
+    } else {
+      completionPrefix = "Due to complete";
+    }
+
     // 2. Academic Background Paragraph
     let startFormatted = formatDateMMYYYY(startDate);
+    let endFormatted = formatDateMMYYYY(endDate);
 
     let acadStr = "";
     if (status === "Complete") {
-      let endFormatted = formatDateMMYYYY(endDate);
       acadStr += `Attended ${university}, India (${startFormatted} to ${endFormatted}) which is a recognized ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
-      acadStr += `Awarded a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
+      acadStr += `${completionPrefix} a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
     } else {
-      let endFormatted = formatDateMMYYYY(endDate);
       acadStr += `Attending ${university}, India (${startFormatted} to ${endFormatted}) which is a recognized ${universityType} University (ENIC) and an AEI Section ${tierCategory} ranked HEI. A Bachelor degree is considered comparable to a UK Bachelor degree.\n\n`;
-      acadStr += `Due to complete a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
+      acadStr += `${completionPrefix} a ${degreeSubject} (${endFormatted}). ${scoreDisplayStr}.\n`;
     }
 
     // Document status
