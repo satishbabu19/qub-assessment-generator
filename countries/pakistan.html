@@ -223,12 +223,12 @@
 
         <div class="row-2">
           <div class="form-group">
-            <label for="cgpa">Marks Obtained</label>
-            <input type="number" step="0.01" id="cgpa" value="" placeholder="e.g. 3450 or 62.5">
+            <label for="cgpa">Marks Obtained / CGPA</label>
+            <input type="number" step="0.01" id="cgpa" value="" placeholder="e.g. 3.1 or 788">
           </div>
           <div class="form-group">
-            <label for="totalScale">Total Maximum Marks</label>
-            <input type="number" step="0.1" id="totalScale" value="100" placeholder="e.g. 5000 or 100">
+            <label for="totalScale">Total Maximum Marks / Scale</label>
+            <input type="number" step="0.1" id="totalScale" value="4.0" placeholder="4.0 or 1500">
           </div>
         </div>
 
@@ -543,7 +543,7 @@
     const degreeSubject = document.getElementById("degreeSubject").value.trim() || "SUBJECT";
     
     const marksObtained = document.getElementById("cgpa").value.trim();
-    const totalMarks = document.getElementById("totalScale").value.trim() || "100";
+    const totalMarks = document.getElementById("totalScale").value.trim() || "4.0";
     const ukClass = document.getElementById("ukClass").value;
     
     const courseObj = getSelectedCourse();
@@ -636,20 +636,22 @@
       completionPrefix = "Due to complete";
     }
 
-    // Automatic Percentage Calculation from Marks Obtained & Total Maximum Marks
+    // Dynamic Score Formatting matching requested pattern
     let scoreDisplayStr = "";
     const numObtained = parseFloat(marksObtained);
     const numTotal = parseFloat(totalMarks);
 
     if (!isNaN(numObtained) && !isNaN(numTotal) && numTotal > 0) {
-      const calculatedPct = ((numObtained / numTotal) * 100).toFixed(2);
-      if (numTotal === 100) {
-        scoreDisplayStr = `Uploaded Transcript displays an overall score of ${marksObtained}%`;
+      if (numTotal <= 10) {
+        // Standard GPA/Scale format (e.g., 3.1 out of 4.0)
+        scoreDisplayStr = `Uploaded transcripts display a CGPA of ${marksObtained} out of ${totalMarks}`;
       } else {
-        scoreDisplayStr = `Uploaded Transcript displays an overall score of ${marksObtained} out of ${totalMarks} (Avg - ${calculatedPct}% - Manual Calculation)`;
+        // Marks Obtained format with Percentage & Manual Calculation tag
+        const calculatedPct = ((numObtained / numTotal) * 100).toFixed(2);
+        scoreDisplayStr = `Uploaded transcripts display an overall score of ${marksObtained} out of ${totalMarks} (Avg - ${calculatedPct}% Manual Calculation)`;
       }
     } else {
-      scoreDisplayStr = marksObtained ? `Uploaded Transcript displays an overall score of ${marksObtained}%` : `Uploaded Transcript displays an overall score of XX%`;
+      scoreDisplayStr = marksObtained ? `Uploaded transcripts display an overall score of ${marksObtained}` : `Uploaded transcripts display an overall score of XX`;
     }
 
     // Template Text Assembly
@@ -660,9 +662,9 @@
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
       `${completionPrefix} a ${degreeSubject} in ${endYear}. ${scoreDisplayStr}. ${docStatusPhrase}\n\n` +
       `For this tier 1 institution: \n` +
-      `a score of 70% is considered comparable to a UK First Class  \n` +
-      `a score of 58% is considered comparable to a UK 2.1 standard  \n` +
-      `53% to a UK 2.2 standard \n\n` +
+      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
+      `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.5/4.0 to a UK 2.2 standard \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
       `${recommendLine}`;
 
@@ -671,9 +673,9 @@
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
       `${completionPrefix} a ${degreeSubject} in ${endYear}. ${scoreDisplayStr}. ${docStatusPhrase}\n\n` +
       `For this tier 2 institution: \n` +
-      `a score of 70% is considered comparable to a UK First Class  \n` +
-      `a score of 60% is considered comparable to a UK 2.1 standard  \n` +
-      `55% to a UK 2.2 standard.  \n\n` +
+      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
+      `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.7/4.0 to a UK 2.2 standard.  \n\n` +
       `This Bachelor degree can be considered comparable to a UK ${ukClass} standard.  \n\n` +
       `${recommendLine}`;
 
@@ -682,9 +684,9 @@
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
       `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. ${scoreDisplayStr} to date. ${docStatusPhrase}\n\n` +
       `For this tier 1 institution: \n` +
-      `a score of 70% is considered comparable to a UK First Class  \n` +
-      `a score of 58% is considered comparable to a UK 2.1 standard  \n` +
-      `53% to a UK 2.2 standard \n\n` +
+      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
+      `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.5/4.0 to a UK 2.2 standard \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
       `${recommendLine}`;
 
@@ -693,9 +695,9 @@
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
       `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. ${scoreDisplayStr} to date. ${docStatusPhrase}\n\n` +
       `For this tier 2 institution: \n` +
-      `a score of 70% is considered comparable to a UK First Class  \n` +
-      `a score of 60% is considered comparable to a UK 2.1 standard  \n` +
-      `55% to a UK 2.2 standard.  \n\n` +
+      `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
+      `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
+      `2.7/4.0 to a UK 2.2 standard.  \n\n` +
       `Therefore this Bachelor degree can be considered currently comparable to a UK ${ukClass} standard. \n\n` +
       `${recommendLine}`;
 
