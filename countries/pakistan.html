@@ -628,13 +628,21 @@
       docStatusPhrase = "Transcripts and degree award certificate are missing.";
     }
 
+    // Determine completion verb prefix based on scenario and degreeCert status
+    let completionPrefix = "";
+    if (scenario.includes("complete")) {
+      completionPrefix = (degreeCert === "Provided") ? "Awarded" : "Completed";
+    } else {
+      completionPrefix = "Due to complete";
+    }
+
     // Template Text Assembly
     let noteText = "";
 
     if (scenario === "tier1_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
       `For this tier 1 institution: \n` +
       `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
       `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
@@ -645,7 +653,7 @@
     } else if (scenario === "tier2_complete") {
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endYear}. Uploaded transcripts display a CGPA of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
       `For this tier 2 institution: \n` +
       `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
       `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
@@ -656,7 +664,7 @@
     } else if (scenario === "tier1_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
       `For this tier 1 institution: \n` +
       `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
       `a CGPA of 2.7/4.0 is considered comparable to a UK 2.1 standard  \n` +
@@ -667,7 +675,7 @@
     } else if (scenario === "tier2_ongoing") {
       noteText = englishEvalSummary +
       `Attending ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector HEI (ENIC), on the HEC list of universities, and ranked as tier 2 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a ${degreeSubject} in ${endMonthYear}. Uploaded transcripts display a CGPA to date of ${cgpa}/${totalScale}. ${docStatusPhrase}\n\n` +
       `For this tier 2 institution: \n` +
       `a CGPA of 3.5/4.0 is considered comparable to a UK First Class  \n` +
       `a CGPA of 3.0/4.0 is considered comparable to a UK 2.1 standard  \n` +
@@ -681,7 +689,7 @@
 
       noteText = englishEvalSummary +
       `Attended ${uniName}, Pakistan (${startDate} to ${endDate}) which is a recognised ${sector} sector university (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a ${degreeSubject} in (${endYear}). Uploaded transcripts and award cert display a final score of ${bPct}. \n\n` +
+      `${completionPrefix} a ${degreeSubject} in (${endYear}). Uploaded transcripts and award cert display a final score of ${bPct}. \n\n` +
       `Attended ${masterUni}, Pakistan (${masterStartDate} to ${masterEndDate}) which is a recognised ${sector} sector HEI (ENIC) and on the HEC list of universities. A 2/3 year Bachelor degree followed by a Master’s degree may be considered comparable to a UK Bachelor degree.  \n\n` +
       `Awarded a ${masterSubject} in (${masterEndYear}). Uploaded transcripts and award cert display a final score of ${mPct}. ${docStatusPhrase}\n\n` +
       `According to QUB guidelines: \n` +
@@ -693,14 +701,14 @@
     } else if (scenario === "punjab_llm_complete") {
       noteText = englishEvalSummary +
       `Attended University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Awarded a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
       `Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
       `${recommendLine}`;
 
     } else if (scenario === "punjab_llm_ongoing") {
       noteText = englishEvalSummary +
       `Attending University of the Punjab, Lahore, Pakistan (${startDate} to ${endDate}) which is a recognised public sector HEI (ENIC), on the HEC list of universities, and ranked as tier 1 by QUB. A 4-year Bachelor degree is considered comparable to a UK Bachelor degree. \n\n` +
-      `Due to complete a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
+      `${completionPrefix} a 5 year Bachelor degree in Law in ${endYear}. Uploaded transcripts display a score of ${cgpa}%. ${docStatusPhrase}\n\n` +
       `Under the pilot scheme, 5 year LLB applicants from University of the Punjab are eligible for entry to LLM programmes with 50%. \n\n` +
       `${recommendLine}`;
     }
