@@ -54,6 +54,10 @@ footer{border-top:1px solid var(--line-soft);padding-top:22px;margin-top:44px;di
 .brand-row img{height:34px;width:auto;filter:brightness(0) invert(1) opacity(.92)}
 .back{display:inline-block;margin-bottom:18px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.06em;color:var(--text-faint);text-decoration:none;transition:color .15s ease}
 .back:hover{color:var(--qub-gold)}
+.tb{margin:0 0 8px}
+#final{min-height:260px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg-raised);font-size:14.5px;line-height:1.55;word-break:break-word}
+#final:focus{outline:none;border-color:var(--qub-red-bright)}
+#final a{color:var(--qub-gold)}
 </style>
 </head>
 <body>
@@ -77,8 +81,9 @@ footer{border-top:1px solid var(--line-soft);padding-top:22px;margin-top:44px;di
         <label>Name</label>
         <input id="edName" placeholder="e.g. Missing documents reminder">
         <label>Template text</label>
+        <div class="row tb"><button class="btn" id="boldBtn" type="button" title="Bold (Ctrl+B)"><b>B</b></button><button class="btn" id="ulBtn" type="button" title="Underline (Ctrl+U)"><u>U</u></button></div>
         <textarea id="edBody" placeholder="Subject: Your application, {{name}}&#10;&#10;Dear {{name}},&#10;..."></textarea>
-        <p class="hint">Use {{placeholders}} or [placeholders] for the parts that change. Start with a "Subject:" line if you want a subject. Paste straight from OneNote.</p>
+        <p class="hint">Use {{placeholders}} or [placeholders] for the parts that change. Start with a "Subject:" line if you want a subject. For a clickable link write [link words](https://address). Select text and press B or U (or Ctrl+B / Ctrl+U) for bold or underline. Paste straight from OneNote.</p>
         <div class="row">
           <button class="btn pri" id="saveBtn">Save</button>
           <button class="btn" id="cancelBtn">Cancel</button>
@@ -92,10 +97,11 @@ footer{border-top:1px solid var(--line-soft);padding-top:22px;margin-top:44px;di
           <div class="fields" id="fields"></div>
           <label>Subject</label>
           <input id="subj">
-          <label>Draft</label>
-          <textarea id="out"></textarea>
+          <label>Email</label>
+          <div id="final" contenteditable="true" spellcheck="true"></div>
           <div class="row">
-            <button class="btn pri" id="copyBtn">Copy draft</button>
+            <button class="btn pri" id="copyBtn">Copy email</button>
+            <button class="btn" id="copySubjBtn">Copy subject</button>
             <button class="btn" id="mailBtn">Open in email app</button>
             <button class="btn" id="editBtn">Edit template</button>
             <span class="toast" id="toast"></span>
@@ -166,16 +172,16 @@ var samples=[
 {
 "id": "q11",
 "name": "CAS for academic progression",
-"body": "Dear {{name}},\nRef: {{app no}}\n\nThank you for your application to Queen’s University Belfast.\n\nIn assessing your application for entry to postgraduate studies at Queen’s University Belfast, we are also required to check your immigration history. There are complex UK immigration issues which the University must take into account when considering the possibility of an international student commencing a course at Queen’s University Belfast having previously undertaken studies at the same level at either Queen’s or another UK university. One of the UKVI requirements is that the University has to ensure the course for which it is assigning a Confirmation of Acceptance for Studies (CAS) represents academic progression from the most recent course for which the student has been granted a visa under Tier 4 or as a Student. Therefore, if a student is granted a Tier 4 Student or Student visa for a postgraduate course and then either drops out of or completes that course, another UK institution could NOT assign a CAS for a different course at the same level unless academic progression is evident.\n\nIn assessing your application for this course, it is vital that nationality and immigration requirements are therefore taken into consideration, as the course you are applying for is at the same level as your previous/current course of study ({{previous degree and university}}).\n\nIf you wish to be considered for entry to Queen’s University Belfast, we would be grateful if you could please complete and return the attached form at your earliest convenience.\n\nFor more information about the requirements surrounding academic progression please refer to Appendix ST of the Student Immigration Rules (https://www.gov.uk/guidance/immigration-rules/appendix-st-student).\n\nPlease note that this information is required before a decision can be made on your application and therefore we would be grateful for a response by {{deadline}}. The information you provide on this form regarding academic progression will be taken into consideration by the University when assessing your application.\n\nPlease ensure that you provide a full, clear and detailed answer for section C in the attached form.\n\nAlong with the completed attached form, please either upload to the Queen’s Portal or email a scanned copy of the following documentation to intl.admissions@qub.ac.uk:\nCAS issued by previous/current institution.\nVisa and BRP related to your previous/current course of study.\nFull and final official transcript and award certificate from previous course of study.\n\nIf you have any further queries, please do not hesitate to contact us. I look forward to hearing from you.\nAdmissions and Access Service"
+"body": "Dear {{name}},\nRef: {{app no}}\n\nThank you for your application to Queen’s University Belfast.\n\nIn assessing your application for entry to postgraduate studies at Queen’s University Belfast, we are also required to check your immigration history. There are complex UK immigration issues which the University must take into account when considering the possibility of an international student commencing a course at Queen’s University Belfast having previously undertaken studies at the same level at either Queen’s or another UK university. One of the UKVI requirements is that the University has to ensure the course for which it is assigning a Confirmation of Acceptance for Studies (CAS) represents academic progression from the most recent course for which the student has been granted a visa under Tier 4 or as a Student. Therefore, if a student is granted a Tier 4 Student or Student visa for a postgraduate course and then either drops out of or completes that course, another UK institution could NOT assign a CAS for a different course at the same level unless academic progression is evident.\n\nIn assessing your application for this course, it is vital that nationality and immigration requirements are therefore taken into consideration, as the course you are applying for is at the same level as your previous/current course of study ({{previous degree and university}}).\n\nIf you wish to be considered for entry to Queen’s University Belfast, we would be grateful if you could please complete and return the attached form at your earliest convenience.\n\nFor more information about the requirements surrounding academic progression please refer to Appendix ST of the [Student Immigration Rules](https://www.gov.uk/guidance/immigration-rules/appendix-st-student).\n\nPlease note that this information is required before a decision can be made on your application and therefore we would be grateful for a response by {{deadline}}. The information you provide on this form regarding academic progression will be taken into consideration by the University when assessing your application.\n\nPlease ensure that you provide a full, clear and detailed answer for section C in the attached form.\n\nAlong with the completed attached form, please either upload to the Queen’s Portal or email a scanned copy of the following documentation to intl.admissions@qub.ac.uk:\nCAS issued by previous/current institution.\nVisa and BRP related to your previous/current course of study.\nFull and final official transcript and award certificate from previous course of study.\n\nIf you have any further queries, please do not hesitate to contact us. I look forward to hearing from you.\nAdmissions and Access Service"
 }
 ];
 function defaults(){var d=new Date();d.setDate(d.getDate()+7);var n=d.getDate(),s=(n%100>=11&&n%100<=13)?"th":({1:"st",2:"nd",3:"rd"}[n%10]||"th");var m=["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()];return {deadline:n+s+" "+m+" "+d.getFullYear()};}
 var templates=[],current=null,values=defaults(),editingNew=false;
-function load(){try{var r=localStorage.getItem(KEY);if(r){var p=JSON.parse(r);if(Array.isArray(p)&&p.length)return p;}}catch(e){}var base=samples.slice();try{var o=JSON.parse(localStorage.getItem(OLD)||"[]");if(Array.isArray(o))o.forEach(function(t){if(t&&t.id!=="s1"&&t.id!=="s2")base.push(t);});}catch(e){}return base;}
+function load(){try{var r=localStorage.getItem(KEY);if(r){var p=JSON.parse(r);if(Array.isArray(p)&&p.length){p.forEach(function(t){if(t&&t.body)t.body=t.body.split("Student Immigration Rules (https://www.gov.uk/guidance/immigration-rules/appendix-st-student)").join("[Student Immigration Rules](https://www.gov.uk/guidance/immigration-rules/appendix-st-student)");});return p;}}}catch(e){}var base=samples.slice();try{var o=JSON.parse(localStorage.getItem(OLD)||"[]");if(Array.isArray(o))o.forEach(function(t){if(t&&t.id!=="s1"&&t.id!=="s2")base.push(t);});}catch(e){}return base;}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(templates));}catch(e){}}
 var $=function(id){return document.getElementById(id);};
-function phs(body){var seen=[],m,re=/\{\{\s*([^}]+?)\s*\}\}|\[([^\]\n]{1,40})\]/g;while((m=re.exec(body))){var k=(m[1]||m[2]).trim();if(seen.indexOf(k)<0)seen.push(k);}return seen;}
-function fill(body){return body.replace(/\{\{\s*([^}]+?)\s*\}\}|\[([^\]\n]{1,40})\]/g,function(all,a,b){var k=(a||b).trim();return values[k]?values[k]:all;});}
+function phs(body){var seen=[],m,re=/\{\{\s*([^}]+?)\s*\}\}|\[([^\]\n]{1,40})\](?!\()/g;while((m=re.exec(body))){var k=(m[1]||m[2]).trim();if(seen.indexOf(k)<0)seen.push(k);}return seen;}
+function fill(body){return body.replace(/\{\{\s*([^}]+?)\s*\}\}|\[([^\]\n]{1,40})\](?!\()/g,function(all,a,b){var k=(a||b).trim();return values[k]?values[k]:all;});}
 function split(txt){var m=txt.match(/^\s*subject:\s*(.*)\r?\n?/i);if(m)return{s:m[1],b:txt.slice(m[0].length).replace(/^\r?\n/,"")};return{s:"",b:txt};}
 function cur(){return templates.filter(function(t){return t.id===current;})[0];}
 function renderList(){var l=$("list");l.innerHTML="";templates.forEach(function(t){var b=document.createElement("button");b.className="item"+(t.id===current?" on":"");b.textContent=t.name;b.onclick=function(){select(t.id);};l.appendChild(b);});}
@@ -185,7 +191,7 @@ function renderDraft(){var t=cur();if(!t){$("empty").classList.remove("hidden");
  var f=$("fields");f.innerHTML="";
  phs(t.body).forEach(function(k){var d=document.createElement("div");var lb=document.createElement("label");lb.textContent=k;var i=document.createElement("input");i.value=values[k]||"";i.oninput=function(){values[k]=i.value;update();};d.appendChild(lb);d.appendChild(i);f.appendChild(d);});
  update();}
-function update(){var t=cur();if(!t)return;var p=split(fill(t.body));$("subj").value=p.s;$("out").value=p.b;}
+function update(){var t=cur();if(!t)return;var p=split(fill(t.body));$("subj").value=p.s;$("final").innerHTML=toInner(p.b);}
 function openEditor(isNew){editingNew=isNew;var t=isNew?{name:"",body:""}:cur();if(!t)return;$("edTitle").textContent=isNew?"New template":"Edit template";$("edName").value=t.name;$("edBody").value=t.body;$("delBtn").classList.toggle("hidden",isNew);$("editor").classList.remove("hidden");$("draftCard").classList.add("hidden");}
 function toast(m){$("toast").textContent=m;setTimeout(function(){$("toast").textContent="";},1800);}
 $("addBtn").onclick=function(){openEditor(true);};
@@ -195,11 +201,34 @@ $("saveBtn").onclick=function(){var n=$("edName").value.trim()||"Untitled",b=$("
  if(editingNew){var id="t"+Date.now();templates.push({id:id,name:n,body:b});current=id;}else{var t=cur();t.name=n;t.body=b;}
  save();values={};select(current);};
 $("delBtn").onclick=function(){if(!confirm("Delete this template?"))return;templates=templates.filter(function(t){return t.id!==current;});current=templates.length?templates[0].id:null;save();select(current);};
-$("copyBtn").onclick=function(){var txt=($("subj").value?"Subject: "+$("subj").value+"\n\n":"")+$("out").value;
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+var MD=/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)/g;
+var BO=/\*\*([^*\n]+?)\*\*/g, UN=/__([^_\n]+?)__/g;
+function fmt(s){return s.replace(BO,"<b>$1</b>").replace(UN,"<u>$1</u>");}
+function toInner(t){var links=[];var s=esc(t).replace(MD,function(m,a,u){links.push('<a href="'+u+'">'+fmt(a)+'</a>');return "\u0001"+(links.length-1)+"\u0001";});
+ s=s.replace(/(https?:\/\/[^\s<)]*[^\s<).,;])/g,'<a href="$1">$1</a>');
+ s=fmt(s).replace(/\u0001(\d+)\u0001/g,function(m,i){return links[i];});
+ return s.replace(/\r?\n/g,"<br>");}
+function plainFromFinal(){var c=$("final").cloneNode(true);
+ c.querySelectorAll("a").forEach(function(a){var u=a.getAttribute("href"),t=a.textContent;a.replaceWith(t===u?t:t+" ("+u+")");});
+ c.querySelectorAll("br").forEach(function(b){b.replaceWith("\n");});
+ return c.textContent.replace(/\u00a0/g," ");}
+function wrap(m){var t=$("edBody"),s=t.selectionStart,e=t.selectionEnd,v=t.value,sel=v.slice(s,e),L=m.length;
+ if(sel.length>=2*L&&sel.slice(0,L)===m&&sel.slice(-L)===m){t.value=v.slice(0,s)+sel.slice(L,-L)+v.slice(e);t.setSelectionRange(s,e-2*L);}
+ else{t.value=v.slice(0,s)+m+sel+m+v.slice(e);t.setSelectionRange(s+L,e+L);}
+ t.focus();}
+$("boldBtn").onclick=function(){wrap("**");};
+$("ulBtn").onclick=function(){wrap("__");};
+$("edBody").onkeydown=function(e){if(e.ctrlKey||e.metaKey){var k=e.key.toLowerCase();if(k==="b"){e.preventDefault();wrap("**");}else if(k==="u"){e.preventDefault();wrap("__");}}};
+function copyText(txt){function ok(){toast("Copied");}
+ function fb(){var ta=document.createElement("textarea");ta.value=txt;ta.style.cssText="position:fixed;left:-9999px";document.body.appendChild(ta);ta.select();try{document.execCommand("copy")?ok():toast("Copy failed");}catch(e){toast("Copy failed");}document.body.removeChild(ta);}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb);}else fb();}
+$("copyBtn").onclick=function(){var html='<div style="font-family:Calibri,Arial,sans-serif;font-size:11pt">'+$("final").innerHTML+'</div>',txt=plainFromFinal();
  function ok(){toast("Copied");}
- if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,function(){fb();});}else fb();
- function fb(){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");ok();}catch(e){toast("Copy failed");}document.body.removeChild(ta);}};
-$("mailBtn").onclick=function(){location.href="mailto:?subject="+encodeURIComponent($("subj").value)+"&body="+encodeURIComponent($("out").value);};
+ function fb(){var d=document.createElement("div");d.innerHTML=html;d.style.cssText="position:fixed;left:-9999px;top:0;white-space:normal";document.body.appendChild(d);var r=document.createRange();r.selectNodeContents(d);var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);try{document.execCommand("copy")?ok():toast("Copy failed");}catch(e){toast("Copy failed");}sel.removeAllRanges();document.body.removeChild(d);}
+ if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([txt],{type:"text/plain"})})]).then(ok,fb);}catch(e){fb();}}else fb();};
+$("copySubjBtn").onclick=function(){copyText($("subj").value);};
+$("mailBtn").onclick=function(){location.href="mailto:?subject="+encodeURIComponent($("subj").value)+"&body="+encodeURIComponent(plainFromFinal());};
 templates=load();current=templates[0].id;renderList();renderDraft();
 })();
 </script>
