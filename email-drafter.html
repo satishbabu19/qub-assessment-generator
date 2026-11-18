@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Email Template Drafter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0c;--bg-raised:#141417;--bg-card:#18181c;--bg-card-hover:#1e1e23;--line:#28282e;--line-soft:#1c1c20;--text:#efece6;--text-dim:#a6a4a0;--text-faint:#68666e;--qub-red:#8f0e20;--qub-red-bright:#b8142c;--qub-gold:#d9a91a;--qub-blue:#1e3a63;--radius:14px;
+--font-display:'Fraunces',Georgia,serif;--font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,monospace;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;background:radial-gradient(ellipse 900px 500px at 50% -10%,rgba(143,14,32,.16),transparent 60%),var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding:0 24px 64px}
+header{padding:44px 0 0}
+.brand-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{font-family:var(--font-display);font-size:17px;font-weight:500;letter-spacing:.01em;color:var(--text)}
+.divider{width:1px;height:24px;background:var(--line)}
+.kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint)}
+h1{font-family:var(--font-display);font-weight:500;font-size:clamp(30px,5vw,42px);line-height:1.1;margin:20px 0 10px;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--qub-gold)}
+.sub{color:var(--text-dim);font-size:15px;max-width:54ch;margin:0 0 26px}
+.tricolour{height:3px;width:100%;background:linear-gradient(90deg,var(--qub-blue) 0 33.3%,var(--qub-gold) 33.3% 66.6%,var(--qub-red) 66.6% 100%);border-radius:2px;margin-bottom:30px;opacity:.9}
+.grid{display:grid;grid-template-columns:270px 1fr;gap:18px;align-items:start}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+h2{font-family:var(--font-display);font-weight:500;font-size:19px;letter-spacing:-.01em;margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:block;padding:10px 13px;border:1px solid var(--line);border-radius:12px;cursor:pointer;background:var(--bg-raised);color:var(--text);text-align:left;font:500 14px/1.35 var(--font-body);width:100%;transition:border-color .15s ease,background .15s ease,transform .1s ease}
+.item:hover{border-color:var(--qub-red-bright);background:var(--bg-card-hover);transform:translateY(-1px)}
+.item.on{border-color:var(--qub-red-bright);background:var(--bg-card-hover);box-shadow:inset 3px 0 0 var(--qub-gold)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+button.btn{font:500 13px var(--font-mono);letter-spacing:.03em;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--bg-raised);color:var(--text-dim);cursor:pointer;transition:.15s ease}
+button.btn:hover{border-color:var(--text-faint);color:var(--text)}
+button.pri{background:var(--qub-red);border-color:var(--qub-red-bright);color:#fff}
+button.pri:hover{background:var(--qub-red-bright);border-color:var(--qub-red-bright);color:#fff}
+label{display:block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);margin:14px 0 5px}
+input,textarea{width:100%;font:14.5px/1.55 var(--font-body);padding:10px 13px;border-radius:10px;border:1px solid var(--line);background:var(--bg-raised);color:var(--text);outline:none;transition:border-color .15s ease}
+input:focus,textarea:focus{border-color:var(--qub-red-bright)}
+textarea{min-height:260px;resize:vertical}
+#edBody{min-height:300px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media(max-width:560px){.fields{grid-template-columns:1fr}}
+.hint{font-size:12.5px;color:var(--text-faint);margin:8px 0 0}
+.hidden{display:none}
+.toast{color:var(--qub-gold);font-family:var(--font-mono);font-size:12px}
+#empty{color:var(--text-faint)}
+footer{border-top:1px solid var(--line-soft);padding-top:22px;margin-top:44px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.footer-sub{font-size:12px;color:var(--text-faint)}
+.footer-credit{font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--qub-gold);margin:0}
+.brand-row img{height:34px;width:auto;filter:brightness(0) invert(1) opacity(.92)}
+.back{display:inline-block;margin-bottom:18px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.06em;color:var(--text-faint);text-decoration:none;transition:color .15s ease}
+.back:hover{color:var(--qub-gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="index.html">&larr; All countries</a>
+    <div class="brand-row"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Queen%E2%80%99s_Red_Log.svg" alt="Queen's University Belfast"><span class="divider"></span><span class="kicker">Admissions &middot; Postgraduate</span></div>
+    <h1>Email Template <em>Drafter</em></h1>
+    <p class="sub">Pick a template, fill in the blanks, copy the draft. Deadlines default to seven days from today.</p>
+    <div class="tricolour"></div>
+  </header>
+  <div class="grid">
+    <div class="card">
+      <h2>Templates</h2>
+      <div class="list" id="list"></div>
+      <div class="row"><button class="btn pri" id="addBtn">+ New template</button></div>
+    </div>
+    <div>
+      <div class="card hidden" id="editor">
+        <h2 id="edTitle">Template</h2>
+        <label>Name</label>
+        <input id="edName" placeholder="e.g. Missing documents reminder">
+        <label>Template text</label>
+        <textarea id="edBody" placeholder="Subject: Your application, {{name}}&#10;&#10;Dear {{name}},&#10;..."></textarea>
+        <p class="hint">Use {{placeholders}} or [placeholders] for the parts that change. Start with a "Subject:" line if you want a subject. Paste straight from OneNote.</p>
+        <div class="row">
+          <button class="btn pri" id="saveBtn">Save</button>
+          <button class="btn" id="cancelBtn">Cancel</button>
+          <button class="btn" id="delBtn">Delete</button>
+        </div>
+      </div>
+      <div class="card" id="draftCard">
+        <div id="empty">Add a template to get started.</div>
+        <div id="draftArea" class="hidden">
+          <h2 id="tName"></h2>
+          <div class="fields" id="fields"></div>
+          <label>Subject</label>
+          <input id="subj">
+          <label>Draft</label>
+          <textarea id="out"></textarea>
+          <div class="row">
+            <button class="btn pri" id="copyBtn">Copy draft</button>
+            <button class="btn" id="mailBtn">Open in email app</button>
+            <button class="btn" id="editBtn">Edit template</button>
+            <span class="toast" id="toast"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-sub">Email Template Drafter &middot; QUB Admissions</div>
+    <p class="footer-credit">Made by Satish</p>
+  </footer>
+</div>
+<script>
+(function(){
+var KEY="emailTemplates.v2",OLD="emailTemplates.v1";
+var samples=[
+{
+"id": "q1",
+"name": "Duplicate app with agents (2 applications)",
+"body": "Subject: Confirmation required on which agent applicant to proceed further\n\nDear {{name}},\n\nI hope you are well.\n\nYou have submitted 2 applications for an MSc {{course}}:\nOne was submitted by the agent {{agent 1}} (application number {{app no 1}})\nOne was submitted by the agent {{agent 2}} (application number {{app no 2}})\n\nCan you confirm which application (and agent) you wish to keep and which one we can withdraw?\n\nPlease reply by {{date}} to intl.admissions@qub.ac.uk otherwise application {{app no 2}} will be withdrawn.\n\nWe look forward to hearing from you.\nAdmissions and Access Service"
+},
+{
+"id": "q2",
+"name": "Duplicate app with agents (3 applications)",
+"body": "Subject: Confirmation required on which agent applicant to proceed further\n\nDear {{name}},\n\nYou have submitted 3 applications for a MSc/MA {{course}}:\n{{app no 1}}, whereby the agent noted is {{agent 1}}\n{{app no 2}}, whereby the agent noted is {{agent 2}}\n{{app no 3}}, whereby the agent noted is {{agent 3}}\n\nAt the moment you hold a conditional offer for {{app no 1}}, and you can only hold one conditional offer for each programme. Do you wish us to withdraw {{app no 1}} ({{agent 1}}) and then provide an offer for {{app no 2}} ({{agent 2}}) or {{app no 3}} ({{agent 3}})?\n\nPlease confirm which application (and agent) you wish to keep and which one we can withdraw.\n\nPlease reply by {{date}} to intl.admissions@qub.ac.uk or we will withdraw your later application {{app no}}.\n\nWe look forward to hearing from you.\nAdmissions and Access Service"
+},
+{
+"id": "q3",
+"name": "Course completion in 2027",
+"body": "Subject: Requesting clarification on Bachelor degree course end date: {{app no}}\n\nDear {{name}},\n\nIn order to progress your application, I would be most grateful if you could please clarify the end date of your bachelor’s degree programme. If your programme is due to be completed in 2027, you would not be eligible to start in {{intake}} and would instead need to submit a new application for the September 2027 intake once the application portal opens.\n\nIf your bachelor is complete, please provide a copy of your final bachelor transcript confirming your final CGPA and a copy of your provisional bachelor certificate.\n\nPlease provide this additional information by emailing intl.admissions@qub.ac.uk as soon as possible and no later than {{deadline}}.\n\nI look forward to hearing from you.\nAdmissions and Access Service"
+},
+{
+"id": "q4",
+"name": "No quant modules - Degree in BA",
+"body": "Thank you for your application to the MSc Business Analytics course at QUB.\n\nIn order to progress your application, additional information and documentation is required.\n\nThe academic requirements for the MSc Business Analytics programme are outlined below:\n\nNormally a Bachelor degree awarded by a recognised Indian institution with a final average of 53%–55% or above (comparable to UK 2.2 Honours degree standard), or equivalent qualification acceptable to the University; in any discipline to include one module in a quantitative* area or a quantitative dissertation. Relevant employment experience in a quantitative area may be considered in lieu of a module in a quantitative area and will be considered on a case-by-case basis.\n\n*This could be a course or module in a broad range of quantitative areas such as Finance, Mathematics, Statistics, Economics, Accounting, Engineering or Physics. Equivalent content from across multiple modules will also be considered.\n\nYour application includes your Bachelor of Arts. Based on the transcript provided, there does not appear to be any quantitative modules completed.\n\nIf your degree included quantitative content, please provide a summary statement document which outlines the quantitative content and links to official syllabus information (you can include content across multiple modules).\n\nIf your degree did not contain quantitative content, please provide a CV and a summary statement document of employment experience in quantitative areas.\n\nI look forward to hearing from you by reply to this email as soon as possible and before {{deadline}}, otherwise your application may be withdrawn.\n\nAdmissions and Access Service"
+},
+{
+"id": "q5",
+"name": "Remainder 1 - Document request",
+"body": "Ref: {{app no}}\n\nThank you for your application to MSc {{course}} at Queen’s University Belfast.\n\nIn order to progress your application I would be most grateful if you could please upload the following documentation:\n{{documents}}\n\nPlease provide this additional information by uploading it to the Queen’s Portal (https://myportal.qub.ac.uk) or emailing intl.admissions@qub.ac.uk as soon as possible and no later than {{deadline}}. Otherwise your application may be withdrawn.\n\nI look forward to hearing from you.\nAdmissions and Access Service"
+},
+{
+"id": "q6",
+"name": "Remainder 2 - Chase for documents",
+"body": "Ref: {{app no}}\n\nThank you for your application to MSc {{course}} at Queen’s University Belfast.\n\nI sent an email to you on {{date of first email}}, but there is no record of a response as yet.\n\nIn order to progress your application I would be most grateful if you could please upload the following documentation:\n{{documents}}\n\nPlease upload the above required scanned documentation by {{deadline}} to the Queen’s Portal (https://myportal.qub.ac.uk). Your application will be withdrawn if we do not receive requested documents by this date.\n\nI look forward to hearing from you.\nAdmissions and Access Service"
+},
+{
+"id": "q7",
+"name": "Academic writing sample",
+"body": "Thank you for your application to Queen’s University Belfast.\n\nThe academic selector has requested further information before making a decision on your application; can you please provide the following:\n\nA written sample (usually a marked essay) and a brief letter expressing your interest in the programme.\n\nPlease provide this information by {{date}} to intl.admissions@qub.ac.uk.\n\nAdmissions and Access Service"
+},
+{
+"id": "q8",
+"name": "University is not listed in ENIC",
+"body": "Dear {{name}},\n\nThank you for your application. As part of our admissions process, we verify the status of awarding institutions and the comparability of international qualifications using the ENIC database (https://www.enic.org.uk/).\n\nUpon reviewing the degree certificate you provided, the ENIC database indicates that {{university name}} is not listed as a recognised or accredited degree-awarding institution. A follow up enquiry with ENIC also confirmed this.\n\nAs a University, we can only accept qualifications awarded by accredited higher education institutions. This requirement ensures that all applicants have completed prior academic study at a level that appropriately prepares them for entry to our programmes.\n\nUnfortunately, on this basis we are unable to progress your application further. Your application will therefore be withdrawn, and you will receive formal confirmation of this decision in due course.\n\nAdmissions and Access Service"
+},
+{
+"id": "q9",
+"name": "LLB rejection email",
+"body": "Thank you for your application to our LLM Law ({{intake}} intake) programme.\n\nUnfortunately, you do not meet the academic entry requirements and therefore your application has been unsuccessful.\n\nHowever, you may wish to contact the School of Law directly at law-enquiries@qub.ac.uk and enquire if you can be considered for admission under Recognition of Prior Experiential Learning (RPEL).\n\nAdmissions and Access Service"
+},
+{
+"id": "q10",
+"name": "CAF for visa refusal",
+"body": "Dear {{name}},\nRef: {{app no}}\n\nAs part of our admissions and compliance processes, we are required to review any previous visa refusals before we can proceed with an application. We have therefore placed your application on hold while this review is carried out.\n\nPlease note that any decision to progress with your application and to begin assessing your academic eligibility for an offer will be subject to the outcome of this review. We must be satisfied that, if required, a future Confirmation of Acceptance for Studies (CAS) could be issued in accordance with UK immigration requirements.\n\nWhat you need to do next:\nCAS Assessment Form (attached) - fully completed, with particular attention to Section D3. Insufficient or generic explanations may lead to your application being made unsuccessful.\nVisa Refusal Notice(s) - a clear copy of all pages of your official refusal letter(s), if these were not submitted with your application.\nSupporting Documents - any documents relevant to the refusal(s), such as financial evidence, academic documents, or certificates.\nWritten Statement - a brief explanation of the reasons for the refusal and how you would address those issues in any future visa application.\nIf your visa refusal was for financial reasons, please provide a copy of financial documents/statements you intend to use in support of your application.\n\nOnce we have received and reviewed the required documentation, our Admissions and Compliance teams will assess your application and update you as soon as possible.\n\nThank you for your cooperation.\nAdmissions and Access Service"
+},
+{
+"id": "q11",
+"name": "CAS for academic progression",
+"body": "Dear {{name}},\nRef: {{app no}}\n\nThank you for your application to Queen’s University Belfast.\n\nIn assessing your application for entry to postgraduate studies at Queen’s University Belfast, we are also required to check your immigration history. There are complex UK immigration issues which the University must take into account when considering the possibility of an international student commencing a course at Queen’s University Belfast having previously undertaken studies at the same level at either Queen’s or another UK university. One of the UKVI requirements is that the University has to ensure the course for which it is assigning a Confirmation of Acceptance for Studies (CAS) represents academic progression from the most recent course for which the student has been granted a visa under Tier 4 or as a Student. Therefore, if a student is granted a Tier 4 Student or Student visa for a postgraduate course and then either drops out of or completes that course, another UK institution could NOT assign a CAS for a different course at the same level unless academic progression is evident.\n\nIn assessing your application for this course, it is vital that nationality and immigration requirements are therefore taken into consideration, as the course you are applying for is at the same level as your previous/current course of study ({{previous degree and university}}).\n\nIf you wish to be considered for entry to Queen’s University Belfast, we would be grateful if you could please complete and return the attached form at your earliest convenience.\n\nFor more information about the requirements surrounding academic progression please refer to Appendix ST of the Student Immigration Rules (https://www.gov.uk/guidance/immigration-rules/appendix-st-student).\n\nPlease note that this information is required before a decision can be made on your application and therefore we would be grateful for a response by {{deadline}}. The information you provide on this form regarding academic progression will be taken into consideration by the University when assessing your application.\n\nPlease ensure that you provide a full, clear and detailed answer for section C in the attached form.\n\nAlong with the completed attached form, please either upload to the Queen’s Portal or email a scanned copy of the following documentation to intl.admissions@qub.ac.uk:\nCAS issued by previous/current institution.\nVisa and BRP related to your previous/current course of study.\nFull and final official transcript and award certificate from previous course of study.\n\nIf you have any further queries, please do not hesitate to contact us. I look forward to hearing from you.\nAdmissions and Access Service"
+}
+];
+function defaults(){var d=new Date();d.setDate(d.getDate()+7);var n=d.getDate(),s=(n%100>=11&&n%100<=13)?"th":({1:"st",2:"nd",3:"rd"}[n%10]||"th");var m=["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()];return {deadline:n+s+" "+m+" "+d.getFullYear()};}
+var templates=[],current=null,values=defaults(),editingNew=false;
+function load(){try{var r=localStorage.getItem(KEY);if(r){var p=JSON.parse(r);if(Array.isArray(p)&&p.length)return p;}}catch(e){}var base=samples.slice();try{var o=JSON.parse(localStorage.getItem(OLD)||"[]");if(Array.isArray(o))o.forEach(function(t){if(t&&t.id!=="s1"&&t.id!=="s2")base.push(t);});}catch(e){}return base;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(templates));}catch(e){}}
+var $=function(id){return document.getElementById(id);};
+function phs(body){var seen=[],m,re=/\{\{\s*([^}]+?)\s*\}\}|\[([^\]\n]{1,40})\]/g;while((m=re.exec(body))){var k=(m[1]||m[2]).trim();if(seen.indexOf(k)<0)seen.push(k);}return seen;}
+function fill(body){return body.replace(/\{\{\s*([^}]+?)\s*\}\}|\[([^\]\n]{1,40})\]/g,function(all,a,b){var k=(a||b).trim();return values[k]?values[k]:all;});}
+function split(txt){var m=txt.match(/^\s*subject:\s*(.*)\r?\n?/i);if(m)return{s:m[1],b:txt.slice(m[0].length).replace(/^\r?\n/,"")};return{s:"",b:txt};}
+function cur(){return templates.filter(function(t){return t.id===current;})[0];}
+function renderList(){var l=$("list");l.innerHTML="";templates.forEach(function(t){var b=document.createElement("button");b.className="item"+(t.id===current?" on":"");b.textContent=t.name;b.onclick=function(){select(t.id);};l.appendChild(b);});}
+function select(id){current=id;values=defaults();$("editor").classList.add("hidden");$("draftCard").classList.remove("hidden");renderList();renderDraft();}
+function renderDraft(){var t=cur();if(!t){$("empty").classList.remove("hidden");$("draftArea").classList.add("hidden");return;}
+ $("empty").classList.add("hidden");$("draftArea").classList.remove("hidden");$("tName").textContent=t.name;
+ var f=$("fields");f.innerHTML="";
+ phs(t.body).forEach(function(k){var d=document.createElement("div");var lb=document.createElement("label");lb.textContent=k;var i=document.createElement("input");i.value=values[k]||"";i.oninput=function(){values[k]=i.value;update();};d.appendChild(lb);d.appendChild(i);f.appendChild(d);});
+ update();}
+function update(){var t=cur();if(!t)return;var p=split(fill(t.body));$("subj").value=p.s;$("out").value=p.b;}
+function openEditor(isNew){editingNew=isNew;var t=isNew?{name:"",body:""}:cur();if(!t)return;$("edTitle").textContent=isNew?"New template":"Edit template";$("edName").value=t.name;$("edBody").value=t.body;$("delBtn").classList.toggle("hidden",isNew);$("editor").classList.remove("hidden");$("draftCard").classList.add("hidden");}
+function toast(m){$("toast").textContent=m;setTimeout(function(){$("toast").textContent="";},1800);}
+$("addBtn").onclick=function(){openEditor(true);};
+$("editBtn").onclick=function(){openEditor(false);};
+$("cancelBtn").onclick=function(){$("editor").classList.add("hidden");$("draftCard").classList.remove("hidden");};
+$("saveBtn").onclick=function(){var n=$("edName").value.trim()||"Untitled",b=$("edBody").value;
+ if(editingNew){var id="t"+Date.now();templates.push({id:id,name:n,body:b});current=id;}else{var t=cur();t.name=n;t.body=b;}
+ save();values={};select(current);};
+$("delBtn").onclick=function(){if(!confirm("Delete this template?"))return;templates=templates.filter(function(t){return t.id!==current;});current=templates.length?templates[0].id:null;save();select(current);};
+$("copyBtn").onclick=function(){var txt=($("subj").value?"Subject: "+$("subj").value+"\n\n":"")+$("out").value;
+ function ok(){toast("Copied");}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,function(){fb();});}else fb();
+ function fb(){var ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");ok();}catch(e){toast("Copy failed");}document.body.removeChild(ta);}};
+$("mailBtn").onclick=function(){location.href="mailto:?subject="+encodeURIComponent($("subj").value)+"&body="+encodeURIComponent($("out").value);};
+templates=load();current=templates[0].id;renderList();renderDraft();
+})();
+</script>
+</body>
+</html>
